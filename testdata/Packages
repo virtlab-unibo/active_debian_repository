@@ -1,0 +1,387 @@
+Package: 0ad
+Version: 0~r11863-2
+Installed-Size: 7745
+Maintainer: Debian Games Team <pkg-games-devel@lists.alioth.debian.org>
+Architecture: i386
+Depends: 0ad-data (>= 0~r11863), 0ad-data (<= 0~r11863-2), gamin | fam, libboost-signals1.49.0 (>= 1.49.0-1), libc6 (>= 2.11), libcurl3-gnutls (>= 7.16.2), libenet1a, libgamin0 | libfam0, libgcc1 (>= 1:4.1.1), libgl1-mesa-glx | libgl1, libjpeg8 (>= 8c), libmozjs185-1.0 (>= 1.8.5-1.0.0+dfsg), libnvtt2, libopenal1, libpng12-0 (>= 1.2.13-4), libsdl1.2debian (>= 1.2.11), libstdc++6 (>= 4.6), libvorbisfile3 (>= 1.1.2), libwxbase2.8-0 (>= 2.8.12.1), libwxgtk2.8-0 (>= 2.8.12.1), libx11-6, libxcursor1 (>> 1.1.2), libxml2 (>= 2.7.4), zlib1g (>= 1:1.2.0)
+Pre-Depends: dpkg (>= 1.15.6~)
+Description: Real-time strategy game of ancient warfare
+Homepage: http://www.wildfiregames.com/0ad/
+Description-md5: d943033bedada21853d2ae54a2578a7b
+Tag: game::strategy, implemented-in::c++, interface::x11, role::program,
+ uitoolkit::sdl, uitoolkit::wxwidgets, use::gameplaying,
+ x11::application
+Section: games
+Priority: optional
+Filename: pool/main/0/0ad/0ad_0~r11863-2_i386.deb
+Size: 2226038
+MD5sum: 93699f007bcd8a51e1ab5fba2ecdc400
+SHA1: 602e20176706d3cc7535f01ffdbe91b270ae5012
+SHA256: 2b092f5682ae14351d6f7e47a7c113b7c0cc9ec71046a2e3ecf95eb453909ad8
+
+Package: 0ad-dbg
+Source: 0ad
+Version: 0~r11863-2
+Installed-Size: 44497
+Maintainer: Debian Games Team <pkg-games-devel@lists.alioth.debian.org>
+Architecture: i386
+Depends: 0ad (= 0~r11863-2)
+Pre-Depends: dpkg (>= 1.15.6~)
+Description: Real-time strategy game of ancient warfare (debug)
+Homepage: http://www.wildfiregames.com/0ad/
+Description-md5: a858b67397d1d84d8b4cac9d0deae0d7
+Section: debug
+Priority: extra
+Filename: pool/main/0/0ad/0ad-dbg_0~r11863-2_i386.deb
+Size: 43670212
+MD5sum: 994c2492c390c8eaaadc931ac69ee052
+SHA1: 72e9ebe1da6a8cfa9a1ebe533a582b90a3efe1b0
+SHA256: dc4e148f8cc27b6a73ce191157609b8a1ce250594d377ccc2bafd042f512b740
+
+Package: 0ad-data
+Version: 0~r11863-1
+Installed-Size: 713566
+Maintainer: Debian Games Team <pkg-games-devel@lists.alioth.debian.org>
+Architecture: all
+Depends: tex-gyre, ttf-dejavu-core
+Pre-Depends: dpkg (>= 1.15.6~)
+Suggests: 0ad
+Description: Real-time strategy game of ancient warfare (data)
+Homepage: http://wildfiregames.com/0ad/
+Description-md5: df27feb8d9352e2909a3e6cd62916daa
+Section: games
+Priority: optional
+Filename: pool/main/0/0ad-data/0ad-data_0~r11863-1_all.deb
+Size: 316500336
+MD5sum: aa036194b1d1bffa377b545b69d41c8e
+SHA1: 91b215066190b099dd75532b7843062517582acf
+SHA256: b6e93331b7b1cc30ad7fa60eed9a233d0ab435ae0eacc4fcc8989c4266ed1511
+
+Package: 2ping
+Version: 2.0-1
+Installed-Size: 134
+Maintainer: Ryan Finnie <ryan@finnie.org>
+Architecture: all
+Depends: perl
+Recommends: perl-modules, libio-socket-inet6-perl
+Suggests: libdigest-sha-perl, libdigest-crc-perl
+Description: Ping utility to determine directional packet loss
+Homepage: http://www.finnie.org/software/2ping/
+Description-md5: 2543c220a763445976d1348c5b593743
+Tag: implemented-in::perl, interface::commandline, protocol::ip,
+ role::program, scope::utility, use::analysing, use::measuring,
+ works-with::network-traffic
+Section: net
+Priority: optional
+Filename: pool/main/2/2ping/2ping_2.0-1_all.deb
+Size: 30724
+MD5sum: a815f73f1894e7a12619d37d3dbc1bbc
+SHA1: 19baa38dcc480a218ac4db24ca6f0be6df04a1f6
+SHA256: fd4396ef6793a8fcdf38e751ae60ce513cf4389b5aeebb51af13a8f7995fd521
+
+Package: 2vcard
+Version: 0.5-3
+Installed-Size: 108
+Maintainer: Martin Albisetti <argentina@gmail.com>
+Architecture: all
+Description: perl script to convert an addressbook to VCARD file format
+Description-md5: f6f2cb6577ba2821b51ca843d147b3e1
+Tag: implemented-in::perl, role::program, use::converting, works-with::pim
+Section: utils
+Priority: optional
+Filename: pool/main/2/2vcard/2vcard_0.5-3_all.deb
+Size: 14300
+MD5sum: d831fd82a8605e9258b2314a7d703abe
+SHA1: e903a05f168a825ff84c87326898a182635f8175
+SHA256: 2be9a86f0ec99b1299880c6bf0f4da8257c74a61341c14c103b70c9ec04b10ec
+
+Package: libadminutil-data
+Source: 389-adminutil
+Version: 1.1.15-1
+Installed-Size: 39
+Maintainer: Debian 389ds Team <pkg-fedora-ds-maintainers@lists.alioth.debian.org>
+Architecture: i386
+Description: Utility library for 389ds administration -- data files
+Homepage: http://directory.fedoraproject.org
+Description-md5: a71941672ff5ae93fe98cb8f6e76ed27
+Section: libs
+Priority: extra
+Filename: pool/main/3/389-adminutil/libadminutil-data_1.1.15-1_i386.deb
+Size: 4126
+MD5sum: b2df5e1c51be8b053e00a63caf4a5a60
+SHA1: bdc5be47e0d10ef4f8e368792e9e07b492357271
+SHA256: 3fab51f16045b9899aebb3c482147ecad0b568619dbe3aab6fdc5822279bc67f
+
+Package: libadminutil-dev
+Source: 389-adminutil
+Version: 1.1.15-1
+Installed-Size: 265
+Maintainer: Debian 389ds Team <pkg-fedora-ds-maintainers@lists.alioth.debian.org>
+Architecture: i386
+Depends: libadminutil0 (= 1.1.15-1), libnspr4-dev, libnss3-dev, libicu-dev, libldap2-dev (>= 2.4.28)
+Description: Utility library for 389ds administration - development files
+Homepage: http://directory.fedoraproject.org
+Description-md5: fd0efd618ee3965450d8a9443d5691ea
+Tag: devel::library, role::devel-lib
+Section: libdevel
+Priority: extra
+Filename: pool/main/3/389-adminutil/libadminutil-dev_1.1.15-1_i386.deb
+Size: 74684
+MD5sum: 4b4396e94945c518e03f5b18e2daa358
+SHA1: 9899973a35852e755cad0e17a2d6e760f3b61894
+SHA256: 29b3f9bad51a89ebcb7620a58328ac967c93a7a8204a28daa25926cadf5c0cea
+
+Package: libadminutil0
+Source: 389-adminutil
+Version: 1.1.15-1
+Installed-Size: 173
+Maintainer: Debian 389ds Team <pkg-fedora-ds-maintainers@lists.alioth.debian.org>
+Architecture: i386
+Depends: libc6 (>= 2.7), libicu48 (>= 4.8-1), libldap-2.4-2 (>= 2.4.7), libnspr4 (>= 2:4.9-2~) | libnspr4-0d (>= 1.8.0.10), libnss3 (>= 2:3.13.4-2~) | libnss3-1d (>= 3.12.0~1.9b1), libadminutil-data (>= 1.1.15-1)
+Pre-Depends: multiarch-support
+Description: Utility library for 389ds administration
+Multi-Arch: same
+Homepage: http://directory.fedoraproject.org
+Description-md5: 505c6a4fb43f7eddb0c704bc9607d8b8
+Tag: role::shared-lib
+Section: libs
+Priority: extra
+Filename: pool/main/3/389-adminutil/libadminutil0_1.1.15-1_i386.deb
+Size: 63704
+MD5sum: e3bbc1d115638d98ae5b33c51d53f752
+SHA1: fc065cea6013fcb1eebeeab6eda3aad26e87cdc3
+SHA256: 809f9380dba553a2ea4f8e8bc627d34443cc35a73a1c3e977058c276870479fc
+
+Package: 389-console
+Version: 1.1.7-1
+Installed-Size: 104
+Maintainer: Debian 389ds Team <pkg-fedora-ds-maintainers@lists.alioth.debian.org>
+Architecture: all
+Depends: libidm-console-framework-java, openjdk-6-jre | java6-runtime
+Description: 389 Management Console
+Homepage: http://directory.fedoraproject.org
+Description-md5: 187e28968b69fb6bd134903810624c7c
+Section: java
+Priority: extra
+Filename: pool/main/3/389-console/389-console_1.1.7-1_all.deb
+Size: 64104
+MD5sum: f88ee74a636bd502860941caff0992ba
+SHA1: 800db40d79245ad1f60a396a25676d6367928aaf
+SHA256: 8ec2fa2ce9e35933296d72d3835d140339d10ef8c683684976c512d2f65af2f2
+
+Package: 3dchess
+Version: 0.8.1-17
+Installed-Size: 152
+Maintainer: Debian Games Team <pkg-games-devel@lists.alioth.debian.org>
+Architecture: i386
+Depends: libc6 (>= 2.0), libx11-6, libxpm4, libxt6, xaw3dg (>= 1.5+E-1)
+Description: Play chess across 3 boards!
+Description-md5: 12d01b96d7645ee302ebc29cde999e92
+Tag: game::board, game::board:chess, game::strategy, implemented-in::c,
+ interface::x11, role::program, uitoolkit::xlib, use::gameplaying,
+ x11::application
+Section: games
+Priority: optional
+Filename: pool/main/3/3dchess/3dchess_0.8.1-17_i386.deb
+Size: 35086
+MD5sum: 3379b9efd51c5d5d4d5b0148cfa934be
+SHA1: c2286aad7f8bacea2017cb079a74a2a51d14f563
+SHA256: fbf737dedbf0ddce57921f1582a5cf43f225ffacf17a02702a38bb9141d5e756
+
+Package: adabrowse
+Version: 4.0.3-5
+Installed-Size: 1457
+Maintainer: Adrian-Ken Rueegsegger <ken@codelabs.ch>
+Architecture: i386
+Depends: libasis2010, libc6 (>= 2.3.6-6~), libgcc1 (>= 1:4.1.1), libgnat-4.6 (>= 4.6.2-3), libgnatvsn4.6 (>= 4.6.2-3), gnat-4.6
+Description: HTML generator for Ada 95 library unit specifications
+Homepage: http://home.datacomm.ch/t_wolf/tw/ada95/adabrowse/
+Description-md5: c9da131bd67c3c48d71592d36d2609bd
+Tag: devel::docsystem, devel::lang:ada, implemented-in::ada,
+ interface::shell, role::program, works-with-format::html,
+ works-with-format::xml, works-with::software:source, works-with::text
+Section: devel
+Priority: optional
+Filename: pool/main/a/adabrowse/adabrowse_4.0.3-5_i386.deb
+Size: 574260
+MD5sum: 6bc6427382764d2eb5c9189be0d6d1c4
+SHA1: 56dde6e9bdfcc34defb5bd0fc539421c7810f85f
+SHA256: c16a6f914f0ade300afbb1cd4d361757bab920d0d81ca62e95f30ec28845bbbf
+
+Package: adacgi1
+Source: adacgi
+Version: 1.6-17
+Installed-Size: 292
+Maintainer: Phil Brooke <pjb@debian.org>
+Architecture: i386
+Replaces: adacgi, adacgi0
+Depends: gnat, gnat-4.6
+Conflicts: adacgi, adacgi0
+Description: Ada CGI interface
+Description-md5: a1997593754fb7533c09e85e86cdd284
+Section: web
+Priority: optional
+Filename: pool/main/a/adacgi/adacgi1_1.6-17_i386.deb
+Size: 90198
+MD5sum: a8289252724e6b3f383ca524a22d8d71
+SHA1: 89cf96f785327ca491da47bb2ba0455cd7cc66e9
+SHA256: 9b7634d8c67d955e7ccae24ee83a6a2dcddc553dfd71e7acccdc5f34f979635b
+
+Package: adacontrol
+Version: 1.12r4-3
+Installed-Size: 3668
+Maintainer: Ludovic Brenta <lbrenta@debian.org>
+Architecture: i386
+Depends: gnat-4.6, libasis2010, libc6 (>= 2.0), libgcc1 (>= 1:4.1.1), libgnat-4.6 (>= 4.6.2-3), libgnatvsn4.6 (>= 4.6.2-3), dpkg (>= 1.15.4) | install-info
+Enhances: gnat-gps, gprbuild
+Description: Ada rules controller
+Homepage: http://www.adalog.fr/adacontrol2.htm
+Description-md5: a3caeeaf8c65d154ffa6c820887aa6c2
+Tag: devel::lang:ada, implemented-in::ada
+Section: devel
+Priority: optional
+Filename: pool/main/a/adacontrol/adacontrol_1.12r4-3_i386.deb
+Size: 1444658
+MD5sum: 3024658e2476af21b2c69f1533eaa120
+SHA1: 65284d5616363a76052781ded9aac71b3f91200f
+SHA256: b10712f64bb413ed13e9256c71ea133b35788e6c548839d12a8e2e2948d65070
+
+Package: libadasockets4
+Source: adasockets
+Version: 1.8.10-2
+Installed-Size: 105
+Maintainer: Phil Brooke <pjb@debian.org>
+Architecture: i386
+Depends: libc6 (>= 2.1.3), libgcc1 (>= 1:4.1.1)
+Description: bindings for socket services in Ada
+Description-md5: 12521b6e0f1c74989c835df818c9c209
+Tag: role::shared-lib
+Section: libs
+Priority: extra
+Filename: pool/main/a/adasockets/libadasockets4_1.8.10-2_i386.deb
+Size: 41164
+MD5sum: 354dcaa7a47d9e5147b579f7451d3292
+SHA1: f41aac5485cea0ba587635378fff663aa1a67a51
+SHA256: 7cb3057f5693f0b9bdb6933e26c75659033ba4f2d6d8a6b4f6cb23437edf4835
+
+Package: chrony
+Version: 1.24-3.1+deb7u1
+Installed-Size: 761
+Maintainer: John G. Hasler <jhasler@debian.org>
+Architecture: i386
+Replaces: time-daemon
+Provides: time-daemon
+Depends: libc6 (>= 2.7), ucf, timelimit, dpkg (>= 1.15.4) | install-info
+Recommends: udev (>= 0.124-1)
+Conflicts: ntp, ntp-refclock, ntp-simple, time-daemon
+Description: Sets your computer's clock from time servers on the Net
+Description-md5: a084ce91a7c033de25b47b15149d9e58
+Tag: interface::daemon, interface::text-mode, network::server,
+ network::service, role::program, uitoolkit::ncurses, use::timekeeping
+Section: admin
+Priority: extra
+Filename: pool/main/c/chrony/chrony_1.24-3.1+deb7u1_i386.deb
+Size: 359440
+MD5sum: 93240b356658adea871fd67ededdd86c
+SHA1: 0da51fa85d95705db2566079af719619631f5474
+SHA256: a6961b65cca02295ffa8b09ce4c98d4735e02f83c2b02b2d41c106b1479e57d3
+
+Package: otf-symbols-circos
+Source: circos
+Version: 0.61-3
+Installed-Size: 38
+Maintainer: Debian Med Packaging Team <debian-med-packaging@lists.alioth.debian.org>
+Architecture: all
+Depends: fonts-circos-symbols
+Pre-Depends: dpkg (>= 1.15.6)
+Description: transitional dummy package
+Homepage: http://circos.ca/
+Description-md5: d022b4cd65360a59d321e029d730c59e
+Tag: made-of::font, role::data
+Section: fonts
+Priority: optional
+Filename: pool/main/c/circos/otf-symbols-circos_0.61-3_all.deb
+Size: 12274
+MD5sum: 11672538d4c6f36849063950c80f0041
+SHA1: 4102e62ea3a90adf36f1d7782dbd6e339ed096ce
+SHA256: aa7047573688511c70506ce0fb7c9f31da17bd1b5edadaae618062805ba11eb6
+
+Package: circos-tools
+Version: 0.16-2
+Installed-Size: 19386
+Maintainer: Debian Med Packaging Team <debian-med-packaging@lists.alioth.debian.org>
+Architecture: all
+Depends: perl, circos
+Pre-Depends: dpkg (>= 1.15.6)
+Description: Helper tools for Circos
+Homepage: http://circos.ca/
+Description-md5: cf9d54120046a32febcd05fb72c7b3bd
+Tag: field::biology:bioinformatics, implemented-in::perl, role::program
+Section: science
+Priority: optional
+Filename: pool/main/c/circos-tools/circos-tools_0.16-2_all.deb
+Size: 8210438
+MD5sum: 5698791a3da9ae428652a965018c5711
+SHA1: fbbb322f7df50fb013f6a14af0573f56405c89ac
+SHA256: 43d8fa07f6e907921a9c138a74ae3395b793bada0aef86672b6403e2116dcfca
+
+Package: python-circuits
+Source: circuits
+Version: 1.2.1-1
+Installed-Size: 2978
+Maintainer: Debian Python Modules Team <python-modules-team@lists.alioth.debian.org>
+Architecture: all
+Depends: python (>= 2.5), python-support (>= 0.90.0)
+Recommends: python-multiprocessing | python (>= 2.6)
+Suggests: python-pyinotify, python-pygame, python-gtk2
+Description: event-driven framework with a component architecture
+Homepage: http://code.google.com/p/circuits/
+Description-md5: 64e5b1005a2a9b4b357f75df29dc9076
+Section: python
+Priority: optional
+Filename: pool/main/c/circuits/python-circuits_1.2.1-1_all.deb
+Size: 234150
+MD5sum: 35cceef582ec350bac5407f5dcad8718
+SHA1: 64668900151058d1ddbe917d50a63e844117c110
+SHA256: 54b28907f756f0e83d3ce915bb331164d1669cdc2e553f675b91f13b27bf5b3c
+
+Package: circuslinux-data
+Source: circuslinux
+Version: 1.0.3-28
+Installed-Size: 1727
+Maintainer: Christian T. Steigies <cts@debian.org>
+Architecture: all
+Replaces: circuslinux (<< 1.0.3-9)
+Description: data files for circuslinux
+Homepage: http://www.newbreedsoftware.com/circus-linux/
+Description-md5: ecb361ac1a649930d6f3f10554ec8fac
+Tag: game::arcade, interface::x11, junior::arcade, role::app-data,
+ uitoolkit::sdl, use::gameplaying, x11::application
+Section: games
+Priority: optional
+Filename: pool/main/c/circuslinux/circuslinux-data_1.0.3-28_all.deb
+Size: 1188088
+MD5sum: 103b459b546de7d06e2169fbddef0d09
+SHA1: 1370c0466b36be7d183900bf6a4e70c8c2ed5265
+SHA256: 1ff97b4c0b1e6b016ed07bd6d2926c1b39ccb094e5138186aa77fd32a367a567
+
+Package: libplumb2
+Source: cluster-glue
+Version: 1.0.9+hg2665-1
+Installed-Size: 253
+Maintainer: Debian HA Maintainers <debian-ha-maintainers@lists.alioth.debian.org>
+Architecture: i386
+Replaces: libcluster-glue (<= 1.0.6-1)
+Depends: libbz2-1.0, libc6 (>= 2.4), libglib2.0-0 (>= 2.24.0), libltdl7 (>= 2.4.2), libpils2 (>= 1.0.9+hg2665), libuuid1 (>= 2.16), libxml2 (>= 2.6.27)
+Conflicts: libcluster-glue (<= 1.0.6-1)
+Description: Reusable cluster libraries -- libplumb2
+Homepage: http://hg.linux-ha.org/glue/
+Description-md5: 5f9821063cd3937fbcc51fe1fd7453b1
+Tag: role::shared-lib
+Section: libs
+Priority: optional
+Filename: pool/main/c/cluster-glue/libplumb2_1.0.9+hg2665-1_i386.deb
+Size: 92394
+MD5sum: e2abc197b14060ea75ee53e19c71ea65
+SHA1: 29140e97f129a3f5ca4067c33263c915200c6ac8
+SHA256: 893573efe1f5a1a1e3010e65dd94850ccbaf847a76ca238dc2891473e890cc74

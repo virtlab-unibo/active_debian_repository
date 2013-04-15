@@ -1,0 +1,44 @@
+Package: 2vcard
+Priority: optional
+Section: utils
+Installed-Size: 108
+Maintainer: Martin Albisetti <argentina@gmail.com>
+Architecture: all
+Version: 0.5-3
+Filename: pool/main/2/2vcard/2vcard_0.5-3_all.deb
+Size: 14300
+MD5sum: d831fd82a8605e9258b2314a7d703abe
+SHA1: e903a05f168a825ff84c87326898a182635f8175
+SHA256: 2be9a86f0ec99b1299880c6bf0f4da8257c74a61341c14c103b70c9ec04b10ec
+Description: perl script to convert an addressbook to VCARD file format
+ 2vcard is a little perl script that you can use to convert the
+ popular vcard file format. Currently 2vcard can only convert addressbooks
+ and alias files from the following formats: abook,eudora,juno,ldif,mutt,
+ mh and pine.
+ .
+ The VCARD format is used by gnomecard, for example, which is used by the
+ balsa email client.
+Tag: implemented-in::perl, role::program, use::converting
+
+Package: 3dchess
+Priority: optional
+Section: games
+Installed-Size: 144
+Maintainer: Debian Games Team <pkg-games-devel@lists.alioth.debian.org>
+Architecture: i386
+Version: 0.8.1-16
+Depends: libc6 (>= 2.7-1), libx11-6, libxext6, libxmu6, libxpm4, libxt6, xaw3dg (>= 1.5+E-1)
+Filename: pool/main/3/3dchess/3dchess_0.8.1-16_i386.deb
+Size: 34932
+MD5sum: 9ae878bd661d0dfe2b636c27d0df5c45
+SHA1: 8e93eb4238e148747d7e34bcd8aa665e87b534c1
+SHA256: 4148421d977347a3693f9316c3c2ef3fe3d012ed95b02b23105ae984b93c708c
+Description: 3D chess for X11
+ 3 dimensional Chess game for X11R6.  There are three boards, stacked
+ vertically; 96 pieces of which most are the traditional chess pieces with
+ just a couple of additions; 26 possible directions in which to move.  The
+ AI isn't wonderful, but provides a challenging enough game to all but the
+ most highly skilled players.
+Tag: game::board, game::board:chess, implemented-in::c, interface::x11, role::program, uitoolkit::xlib, use::gameplaying, x11::application
+
+
