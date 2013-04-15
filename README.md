@@ -17,14 +17,15 @@ And then execute:
 
 ActiveDebianRepository has the following components:
 
-### ActiveDebianRepository::Archive
+### ActiveDebianRepository::Source
 
-It handles the debian archive (Repository), for example
+It handles the debian source (Repository, as in 
+/etc/apt/sources.list), for example
 
 ```ruby
-class Archive < ActiveRecord::Base
+class Source < ActiveRecord::Base
   has_many :packages
-  act_as_debian_archive
+  act_as_debian_source
 end
 ```
 
@@ -33,20 +34,20 @@ to the line `deb http://mi.mirror.garr.it/mirrors/debian/ stable main`
 in `/etc/apt/sources.list`, just do
 
 ```ruby
-archive = Archive.new(:uri => 'http://mi.mirror.garr.it/mirrors/debian',
-                      :distribution => 'stable',
-                      :component => 'main',
-                      :arch => 'binary-amd64')
+archive = Source.new(:uri => 'http://mi.mirror.garr.it/mirrors/debian',
+                     :distribution => 'stable',
+                     :component => 'main',
+                     :arch => 'binary-amd64')
 ```
 
 where `arch` can be one of `['binary-amd64', 'binary-i386', 'source']`.
 
-Each Archive has_many Packages (from ActiveDebianRepository::Package). The database
+Each Source has_many Packages (from ActiveDebianRepository::Package). The database
 can be updated with each package in the archive. With the method
 self.db_attrbutes you get the correct attributes for database.
 
 ```ruby
-archive = Archive.new(...)
+archive = Source.new(...)
 archive.update_db_from_net
 ```
 
