@@ -9,6 +9,7 @@ require "active_debian_repository/parser"
 require "active_debian_repository/source"
 require "active_debian_repository/package"
 require "active_debian_repository/deb_pck_file"
+require "active_debian_repository/repository"
 
 ::ActiveRecord::Base.extend ActiveDebianRepository::Package
 ::ActiveRecord::Base.extend ActiveDebianRepository::Source
