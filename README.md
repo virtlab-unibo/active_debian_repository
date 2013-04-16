@@ -13,6 +13,12 @@ And then execute:
 
     $ bundle
 
+## Migration
+
+    rails generate active_debian_repository:migration
+    rake db:migrate
+
+
 ## Components
 
 ActiveDebianRepository has the following components:
