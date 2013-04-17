@@ -19,7 +19,7 @@ describe "Parser" do
     ActiveDebianRepository::Parser.new(@test_file).each do |package|
       da = ActiveDebianRepository::Parser.db_attributes(package)
       da[:name].should == "0ad"
-      da[:description].should == "Real-time strategy game of ancient warfare"
+      da[:short_description].should == "Real-time strategy game of ancient warfare"
       break
     end
   end

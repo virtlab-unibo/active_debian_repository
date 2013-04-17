@@ -10,6 +10,7 @@ describe "Equivs" do
     @package = FactoryGirl.build(:package)
     @expected_file_name = File.join(REPO, @package.deb_file_name)
     p @expected_file_name
+    p @package
     File.delete(@expected_file_name) if File.exists? @expected_file_name
     ActiveDebianRepository::Equivs.new(@package, REPO).create.should be_true
   end

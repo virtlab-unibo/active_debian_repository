@@ -38,7 +38,7 @@ module Package
       self.depends.split(', ').map{|n| n.split[0]}.include?(package_name) if self.depends
     end
 
-    # package.add_files('vlan') or with version package.add_files('vlan', "23.4")
+    # package.add_dependency('vlan') or with version package.add_dependency('vlan', "23.4")
     def add_dependency(package_name, versions = nil)
       if self.depends_on?(package_name)
         self.errors.add(:base, "Dependency already present")
@@ -69,21 +69,25 @@ module Package
       end
     end
 
-    def add_files(files)
-      @files = files
-    end
+    #def add_files(files)
+    #  @files = files
+    #end
 
     # generates the homepage from option homepage_proc
-    def generate_homepage 
-      self.homepage = package_options[:homepage_proc].call(self)
+    def homepage 
+      package_options[:homepage_proc].call(self)
     end
 
     def maintainer
-       "#{package_options[:maintainer]} <#{package_options[:email]}>"
+       "#{package_options[:maintainer]}"
     end
 
     def section
       package_options[:section]
+    end
+
+    def email
+      package_options[:email]
     end
 
     def deb_file_name

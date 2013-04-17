@@ -46,11 +46,10 @@ class Parser
   # in Packages for example there is package attribute that becomes name in database
   def self.db_attributes(p)
     {:name        => p["package"], 
-     :description => p["description"], 
+     :short_description => p["description"], 
      :depends     => p["depends"],
      :version     => p["version"],
-     :body        => p["body"],
-     :filename    => p["filename"]}
+     :long_description        => p["body"]}
   end
 end
 end

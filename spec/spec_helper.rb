@@ -15,7 +15,7 @@ end
 
 class Package < ActiveRecord::Base
   belongs_to :aptsource
-  has_many   :documents
+  has_many   :items
   act_as_debian_package :install_dir => '/usr/share/unibo',
                         :homepage_proc => lambda {|p| "http://example.it/cpkg/#{p.my_meth}"},
                         :repo_dir    => '/var/www/repo/dists/packages',
@@ -28,7 +28,7 @@ end
 
 # Todo
 # Riflettere su act_as_debian_attachment
-class Document < ActiveRecord::Base
+class Item < ActiveRecord::Base
   include Paperclip::Glue
   belongs_to :package
 
@@ -37,7 +37,8 @@ class Document < ActiveRecord::Base
                     :path => "#{File.dirname(__FILE__)}:url"
 
   def to_s
-    self.description.blank? ? self.attach_file_name : self.description
+#    self.description.blank? ? self.attach_file_name : self.description
+    self.attach_file_name
   end
 end
 

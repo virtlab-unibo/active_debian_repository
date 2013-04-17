@@ -9,24 +9,40 @@ ActiveRecord::Schema.define do
 
   create_table "packages", :force => true do |t|
     t.integer "aptsource_id"
-    t.integer "course_id"
     t.string  "name",        :null => false
     t.string  "short_description"
-    t.string  "homepage"
     t.text    "long_description"
+    t.string  "homepage"
     t.text    "depends"
     t.string  "version"
-    t.string  "filename"
   end
 
-  create_table "documents", :force => true do |t|
-    t.integer  "package_id",                         :null => false
+  create_table :items, :force => true do |t|
+    t.integer  "package_id",          :null =>     false
     t.string   "name",                :limit => 200
-    t.text     "description"
+    t.string   "install_path"
+    t.datetime "created_at"
+    t.string   "attach_file_name",    :limit => 250 
+    t.string   "attach_content_type", :limit => 100 
+    t.integer  "attach_file_size"
+    t.datetime "attach_updated_at"
+  end 
+
+  create_table :scripts, :force => true do |t|
+    t.integer  "package_id",          :null =>     false
+    t.string   "name",                :null =>     false
+    t.string   "type",                :null =>     false
     t.datetime "created_at"
     t.string   "attach_file_name",    :limit => 250
     t.string   "attach_content_type", :limit => 100
     t.integer  "attach_file_size"
     t.datetime "attach_updated_at"
   end
+
+  create_table :changelogs, :force => true do |t| 
+    t.integer "package_id",  :null => false
+    t.string  "version"
+    t.text    "description"
+  end 
+
 end

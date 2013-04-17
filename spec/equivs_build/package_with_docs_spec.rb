@@ -1,12 +1,12 @@
 require 'spec_helper'
 require 'tmpdir'
 
-describe "Build packages with documents" do
+describe "Build packages with files" do
 
   REPO = "/tmp"
 
   before(:all) do
-    @package = FactoryGirl.build(:package)
+    @package = FactoryGirl.create(:package)
     # delete the package if already exists 
     @expected_file_name = File.join(REPO, @package.deb_file_name)
     File.delete(@expected_file_name) if File.exists? @expected_file_name
@@ -18,23 +18,25 @@ describe "Build packages with documents" do
     File.open(file_tmp, 'w') {|file| file.print @random_string}
 
     # add the file to the package
-    document = FactoryGirl.build(:document)
-    document.file_name = "pippo_Pluto_paperino"
-    document.path = "/tmp"
-    document.install_path = "/usr/share/test"
-    @package.add_file(document)
+    item = @package.items.new
+    item.name = 'pippo_Pluto_paperino'
+    item.install_path = "/usr/share/test"
+    File.open(file_tmp, 'rb') do |f| 
+      item.attach = f 
+      item.save
+    end
   end
 
-  it "should successfully create a package with a document" do
+  it "should successfully create a package with a file" do
     ActiveDebianRepository::Equivs.new(@package, REPO).create.should be_true
   end
     
-  it "the package previuosly created should contain an attach file with the correct content" do
+  it "should contain an attach file with the correct content" do
     Dir.mktmpdir do |tmp_dir|
       res = `dpkg -x #{@expected_file_name} #{tmp_dir}`
       $?.success?.should be_true
-      doc = @package.files[0]
-      attach = File.join(tmp_dir, doc.install_path, doc.file_name)
+      file = @package.items[0]
+      attach = File.join(tmp_dir, file.install_path, file.name)
       p attach
       File.exists?(attach).should be_true
       File.open(attach, 'r'){|file| file.readline.should == @random_string}

@@ -22,7 +22,7 @@ class ActiveDebianRepositoryMigration < ActiveRecord::Migration
 
     add_index "changelogs", ["package_id"], :name => "package_id"
 
-    create_table :files, :force => true do |t|
+    create_table :items, :force => true do |t|
       t.integer  "package_id",          :null =>     false
       t.string   "name",                :limit => 200
       t.string   "install_path"
@@ -36,6 +36,7 @@ class ActiveDebianRepositoryMigration < ActiveRecord::Migration
     create_table :scripts, :force => true do |t|
       t.integer  "package_id",          :null =>     false
       t.string   "name",                :null =>     false
+      t.string   "type",                :null =>    false
       t.datetime "created_at"
       t.string   "attach_file_name",    :limit => 250
       t.string   "attach_content_type", :limit => 100

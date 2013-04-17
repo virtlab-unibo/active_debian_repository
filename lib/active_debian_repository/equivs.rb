@@ -65,12 +65,12 @@ module ActiveDebianRepository
     #   -
     # * *Raises* :
     def copy_files(tmp_dir)
-      @files_equivs_string = @package.files.empty? ? "# Files" : "Files: "
-      @package.files.each do |file|
-        FileUtils.cp(file.full_path, tmp_dir)
+      @files_equivs_string = @package.items.empty? ? "# Files" : "Files: "
+      @package.items.each do |file|
+        FileUtils.cp(file.attach.path, tmp_dir)
         # appunti.txt /usr/share/unibo/course_name/appunti.txt 
         # this works on WHEEZY or higher (see git checkout squeeze)
-        @files_equivs_string += "#{file.attach_file_name} #{file.install_dir}\n\t"
+        @files_equivs_string += "#{file.attach_file_name} #{file.install_path}\n\t"
       end
     end
 
@@ -129,7 +129,7 @@ Architecture: #{ARCHITECTURE}
 #{scripts_string}
 #{@files_equivs_string}
 Description: #{self.description}
-      ]
+]
     end
 
     #
@@ -161,7 +161,7 @@ Description: #{self.description}
     # * *Returns* :
     #   -
     # * *Raises* :
-    def equivs_build(tmp_dir)
+    def equivs_build!(tmp_dir)
       # create equivs_control file
       File.open(control_file(tmp_dir), 'w') do |f|
         f.puts control_string 
