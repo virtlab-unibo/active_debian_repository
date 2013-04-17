@@ -8,13 +8,13 @@ ActiveRecord::Base.logger = Logger.new(File.dirname(__FILE__) + "/rspec.log")
 ActiveRecord::Base.establish_connection(YAML::load(IO.read(File.dirname(__FILE__) + "/database.yml"))['sqlite3'])
 load(File.dirname(__FILE__) + "/schema.rb")  
 
-class Source < ActiveRecord::Base
+class Aptsource < ActiveRecord::Base
   has_many :packages
-  act_as_debian_source
+  act_as_apt_source
 end
 
 class Package < ActiveRecord::Base
-  belongs_to :source
+  belongs_to :aptsource
   has_many   :documents
   act_as_debian_package :install_dir => '/usr/share/unibo',
                         :homepage_proc => lambda {|p| "http://example.it/cpkg/#{p.my_meth}"},

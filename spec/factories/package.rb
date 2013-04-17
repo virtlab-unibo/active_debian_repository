@@ -6,7 +6,7 @@ FactoryGirl.define do
     body        "Una lunga description\n  \nsu tre righe\n\nho detto tre"
     depends     ""
     version     "1.2.3"
-    source
+    aptsource
   end
 end
 

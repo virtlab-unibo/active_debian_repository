@@ -1,6 +1,6 @@
 # deb http://mi.mirror.garr.it/mirrors/debian/ stable main contrib non-free
 FactoryGirl.define do
-  factory :source do
+  factory :aptsource do
     uri          'http://mi.mirror.garr.it/mirrors/debian'
     distribution 'stable'
     component    'main'
@@ -8,8 +8,8 @@ FactoryGirl.define do
   end
 end
 
-def FactoryGirl.add_packages_from_file(source, file)
+def FactoryGirl.add_packages_from_file(aptsource, file)
   ActiveDebianRepository::Parser.new(file).each do |p|
-    source.packages.create!(ActiveDebianRepository::Parser.db_attributes(p))
+    aptsource.packages.create!(ActiveDebianRepository::Parser.db_attributes(p))
   end
 end

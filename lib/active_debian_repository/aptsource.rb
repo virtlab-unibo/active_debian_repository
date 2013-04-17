@@ -1,11 +1,11 @@
 module ActiveDebianRepository
-  module Source
+  module AptSource
 
     ARCH_LIST = ['binary-amd64', 'binary-i386', 'source']
     BUNZIP2 = '/bin/bunzip2 -q'
     GUNZIP = '/bin/gunzip -q'
 
-    def act_as_debian_source(options={})
+    def act_as_apt_source(options={})
       include InstanceMethods
       logger.info "Inizialized as act_as_debian_source"
     end
