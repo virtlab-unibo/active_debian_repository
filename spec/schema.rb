@@ -11,9 +11,9 @@ ActiveRecord::Schema.define do
     t.integer "aptsource_id"
     t.integer "course_id"
     t.string  "name",        :null => false
-    t.string  "description"
+    t.string  "short_description"
     t.string  "homepage"
-    t.text    "body"
+    t.text    "long_description"
     t.text    "depends"
     t.string  "version"
     t.string  "filename"
