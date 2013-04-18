@@ -12,14 +12,26 @@ module ActiveDebianRepository
 
     module InstanceMethods
       # default Packages.bz2 ma si puo' passare il gz o altra estensione
-      # FIXME change name to method.
+      # FIXME we need to change the name of the  method:
       # something like packages_url or packages_index_url
+      #
+      # * *Args*    :
+      # * *Returns* :
+      #   - 
+      # * *Raises* :
+      #
       def url(ext = 'bz2')
         base = "#{self.uri}/dists/#{self.distribution}/#{self.component}/#{self.arch}"
         base += ((arch.eql? "source") ? "/Sources.#{ext}" :  "/Packages.#{ext}")
       end
 
       # TODO for using is shell (wget)
+      #
+      # * *Args*    :
+      # * *Returns* :
+      #   - 
+      # * *Raises* :
+      #
       def safe_url(ext = 'bz2')
         url(ext)
       end
@@ -28,39 +40,48 @@ module ActiveDebianRepository
         "#{((arch.eql? "source") ? "deb-src" : "deb")} #{self.uri} #{self.distribution} #{self.component}"
       end
 
-      # suppongo che il package file sia ordinato (scaricato da debian)
+      # It suppose that the package file is ordered
+      # (Downloaded from debian repos).
+      #
+      # * *Args*    :
+      # * *Returns* :
+      #   - 
+      # * *Raises* :
+      #
       def update_db(package_file)
-        # Hash di name => version
+        # Hash of name => version
         old_packages = self.packages.select([:name, :version]).inject({}){|res, p| res[p.name] = p.version; res}
 
         ActiveDebianRepository::Parser.new(package_file).each do |p|
-          if old_package_version = old_packages.delete(p['package']) # c'era anche prima
-            if old_package_version != p['version'] # versione diversa.... da aggiornare
+          if old_package_version = old_packages.delete(p['package']) # already there
+            if old_package_version != p['version'] # different version... we need to update it
               self.packages.where(:name => p['package']).first.update_attributes(ActiveDebianRepository::Parser.db_attributes(p)) or raise p.inspect
             end
-          else # da aggiungere
+          else # we need to add it
             self.packages.create!(ActiveDebianRepository::Parser.db_attributes(p))
           end
         end
         self.packages.where(:name => old_packages.keys).delete_all
       end
 
+      #
+      # * *Args*    :
+      # * *Returns* :
+      #   - 
+      # * *Raises* :
+      #
       def update_db_from_net
-        packages_file = Tempfile.new('Packages', '/tmp') 
+        packages_file = Tempfile.new('Packages', '/tmp')
         begin
-          #p %Q^"wget -q "#{self.safe_url('bz2')}" -O - | #{BUNZIP2} > #{packages_file.path}"^
-          #p %Q^"wget -q "#{self.safe_url('gz')}" -O - | #{GUNZIP} > #{packages_file.path}"^
           `wget -q "#{self.safe_url('bz2')}" -O - | #{BUNZIP2} > #{packages_file.path}`
           `wget -q "#{self.safe_url('gz')}" -O - | #{GUNZIP} > #{packages_file.path}` unless $?.success?
           update_db(packages_file)
         ensure
           packages_file.close
-          packages_file.unlink  
+          packages_file.unlink
         end
       end
 
     end
   end
 end
-
-

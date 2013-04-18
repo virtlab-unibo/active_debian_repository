@@ -27,13 +27,11 @@ class Package < ActiveRecord::Base
   end
 end
 
-# Todo
-# Riflettere su act_as_debian_attachment
+#TODO: We need to consider Acts_as_debian_item 
 class Item < ActiveRecord::Base
   include Paperclip::Glue
   belongs_to :package
 
-  # diventa spec/system/documents/attaches/
   has_attached_file :attach,
                     :path => "#{File.dirname(__FILE__)}:url"
 

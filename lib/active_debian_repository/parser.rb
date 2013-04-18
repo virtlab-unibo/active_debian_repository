@@ -7,9 +7,15 @@ class Parser
     @line_regexp = Regexp.new('^(\S+): (.*)')
   end
 
-  # fast version del parser usa grep e sed e ritorna un array
+  # fast version with grep e sed
   # ["2vcard!0.5-3", .... ]
-  # NON USIAMO. Da cancellare
+  # FIXME: We should remove this.
+  #
+  # * *Args*    :
+  # * *Returns* :
+  #   - Array
+  # * *Raises* :
+  #
   def read_unique_id
     res = Array.new
     name = nil
@@ -24,6 +30,12 @@ class Parser
     res
   end
 
+  #
+  # * *Args*    :
+  # * *Returns* :
+  #   - 
+  # * *Raises* :
+  #
   def each
     res = Hash.new {|h, k| h[k] = ''}
     @file.each do |line|
@@ -44,17 +56,18 @@ class Parser
 
   # gives the attributes in hash for db.
   # in Packages for example there is package attribute that becomes name in database
+  #
+  # * *Args*    :
+  # * *Returns* :
+  #   - 
+  # * *Raises* :
+  #
   def self.db_attributes(p)
-    {:name        => p["package"], 
-     :short_description => p["description"], 
+    {:name        => p["package"],
+     :short_description => p["description"],
      :depends     => p["depends"],
      :version     => p["version"],
      :long_description        => p["body"]}
   end
 end
 end
-
-#ActiveDebianRepository::Parser.new('/home/tmp/Packages').each do |p|
-#  p p
-#  exit
-#end
