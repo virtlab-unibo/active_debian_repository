@@ -6,7 +6,7 @@ require 'paperclip'
 
 ActiveRecord::Base.logger = Logger.new(File.dirname(__FILE__) + "/rspec.log")
 ActiveRecord::Base.establish_connection(YAML::load(IO.read(File.dirname(__FILE__) + "/database.yml"))['sqlite3'])
-load(File.dirname(__FILE__) + "/schema.rb")  
+load(File.dirname(__FILE__) + "/schema.rb") 
 
 class Aptsource < ActiveRecord::Base
   has_many :packages
@@ -16,13 +16,14 @@ end
 class Package < ActiveRecord::Base
   belongs_to :aptsource
   has_many   :items
+  has_many   :scripts
   act_as_debian_package :install_dir => '/usr/share/unibo',
                         :homepage_proc => lambda {|p| "http://example.it/cpkg/#{p.my_meth}"},
                         :repo_dir    => '/var/www/repo/dists/packages',
                         :maintainer  => "Unibo Virtlab",
                         :email       => "info@virtlab.unibo.it"
   def my_meth
-    "my_meth_result"    
+    "my_meth_result" 
   end
 end
 
@@ -42,6 +43,18 @@ class Item < ActiveRecord::Base
   end
 end
 
+class Script < ActiveRecord::Base
+  include Paperclip::Glue
+  belongs_to :package
+
+  validates_format_of :stype, :with => /^(preinst|postinst|prerm|postrm)$/, :message => :script_type_unknown
+
+  has_attached_file :attach,
+                    :path => "#{File.dirname(__FILE__)}:url"
+
+  def to_s
+    self.attach_file_name
+  end
+end
 
 FactoryGirl.find_definitions
-

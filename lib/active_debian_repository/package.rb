@@ -1,4 +1,5 @@
 require 'tmpdir'
+require 'tempfile'
 
 module ActiveDebianRepository
 module Package
@@ -19,9 +20,7 @@ module Package
       :section        => 'Misc',
       :homepage_proc  => lambda {|p| "http://localhost/debutils/#{p.name}"},
       :maintainer     => 'Maintainer',
-      :email          => 'debutils@example.com',
-      :tmp_dir        => '/var/www/tmp'
-      
+      :email          => 'debutils@example.com'
     }.merge(options)
 
     include InstanceMethods
@@ -108,12 +107,36 @@ module Package
     #end
 
     #FIXME: scripts has its own table in the db.
-    def scripts
-      @scripts ||= {}
-    end
+    #def scripts
+    #  @scripts ||= {}
+    #end
 
-    def add_script (type, content)
-      self.scripts[type] = content
+    def add_script (type, script)
+      new_script = self.scripts.new 
+      new_script.stype = type.to_s
+      
+      if script.is_a? File
+        logger.debug ("Adding a script, the object is a File")
+        new_script.name = File.basename(script.path)
+        new_script.attach = script
+
+      elsif File.exist? script # it's path
+        logger.debug ("Adding a script, the object is a path")
+        new_script.name = File.basename(script)
+        new_script.attach = File.new(script, 'r')
+
+      elsif script.is_a? String # it's a script body
+        logger.debug ("Adding a script, the object is a script content") 
+        tfile = Tempfile.new(type.to_s)
+        File.open(tfile, 'w') { |f| f.print script }
+        new_script.name = type.to_s
+        new_script.attach = tfile 
+
+      else
+        raise "Script is not a file, a path or a string"
+      end
+
+      new_script.save
     end
 
   end

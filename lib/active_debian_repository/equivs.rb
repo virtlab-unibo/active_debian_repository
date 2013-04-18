@@ -92,16 +92,18 @@ module ActiveDebianRepository
       res.strip
     end
 
-    # {:postint => 'ciao.sh', :preinst => ...}
+    # format the script list in order to add
+    # it to the equivis control file
     #
     # * *Args*    :
     # * *Returns* :
     #   -
     # * *Raises* :
-    def scripts_string
+    def scripts_string 
       scripts_str = ""
-      @package.scripts.each do |type, filename|
-        scripts_str += "#{type.to_s.capitalize}: #{filename}\n"
+      @package.scripts.each do |script|
+        #FileUtils.cp(script.attach.path, tmp_dir)
+        scripts_str += "#{script.stype.to_s.capitalize}: #{script.attach.path}\n"
       end
       scripts_str.strip 
     end
@@ -115,7 +117,7 @@ module ActiveDebianRepository
     # * *Returns* :
     #   -
     # * *Raises* :
-    def control_string
+    def control_string 
       %Q[Section: #{@package.section}
 Priority: #{PRIORITY}
 Homepage: #{@package.homepage}
@@ -165,7 +167,7 @@ Description: #{self.description}
       # create equivs_control file
       File.open(control_file(tmp_dir), 'w') do |f|
         f.puts control_string 
-        ActiveRecord::Base.logger.debug control_string
+        ActiveRecord::Base.logger.debug control_string 
       end
 
       # run equivs-build

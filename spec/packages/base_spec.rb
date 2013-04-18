@@ -45,8 +45,8 @@ describe "Package base" do
     package.depends_on?('2vcar').should be_false
   end
 
-  it "add_script should had a item into the scripts hashes with key :script_type (Ex. postinst)" do
-    package = FactoryGirl.build(:package)
+  it "add_script should had a item into the scripts list with correct info" do
+    package = FactoryGirl.create(:package)
     content = %q{#!/bin/sh -e
 # test script
 
@@ -55,7 +55,7 @@ echo "test script"
 exit 0}
     package.add_script :postinst, content
     package.scripts.size.should == 1
-    package.scripts[:postinst].should_not be_nil
+    package.scripts[0].stype.should == "postinst"
   end
 
 end

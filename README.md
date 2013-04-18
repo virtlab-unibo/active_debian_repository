@@ -65,8 +65,6 @@ is taken from
 
 
 
-:FIMXE copy db/migration from the gem 
-
 ### ActiveDebianRepository::Package
 
 in your project you use this component adding
@@ -79,10 +77,6 @@ class Package < ActiveRecord::Base
                         :homepage_proc => lambda {|p| "https://www.virtlab.unibo.it/cpkg/courses/#{p.course.id}"},
                         :maintainer   => "Unibo Virtlab",
                         :email        => "support@virtlab.unibo.it",
-                        :install_dir  => '/usr/share/unibo',
-                        :repo_dir     => '/var/www/repo/dists/packages',
-                        :core_dep     => 'vlab-core',
-                        :hide_depcore => true
 end
 ```
 
@@ -98,14 +92,14 @@ end
 Takes a file name with the archive index and provides iteration (with each)
 for every package in the filename
  
-### ActiveDebianRepository::DebPckFile
+### ActiveDebianRepository::Equivs
 
 Given a `ActiveDebianRepository::Package` it provides a methods to create the debian
 `.deb` file (internally it uses `EQUIVS_BUILD_COMMAND = "/usr/bin/equivs-build"`).
 
 ```ruby
 package = ActiveDebianRepository::Package.first
-ActiveDebianRepository::DebPckFile.new(package).create
+ActiveDebianRepository::Equivs.new(package, dest_dir).create
 ```
 
 The file is created in `package.repo_dir` dir and 
@@ -114,12 +108,17 @@ is named `package.deb_file_name`.
 For example, given
 
 ```ruby
+dest_dir = '/var/www/repo/dists/packages'
 package = ActiveDebianRepository::Package.new(:name => 'test123', 
-                                :version => '12.8', 
-                                :repo_dir => '/var/www/repo/dists/packages')
+                                :version => '12.8') 
+                                
 ```
 
 the file is created as `/var/www/repo/dists/packages/test123_12.8.deb`
+
+### Examples
+
+You can find examples on how to use this gem in the *spec/spec_helper.rb* file.
 
 ## Contributing
 
