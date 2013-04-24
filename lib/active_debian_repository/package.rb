@@ -6,7 +6,7 @@ module Package
 
   # options:
   #   :homepage_proc => lambda {|p| "http://www.example.it/packages/#{p.name}"},
-  def act_as_debian_package(options={})
+  def acts_as_debian_package(options={})
 
     # Declare a class-level attribute whose value is inheritable by subclasses.
     # Subclasses can change their own value and it will not impact parent class.
@@ -23,11 +23,11 @@ module Package
       :email          => 'debutils@example.com'
     }.merge(options)
 
-    include InstanceMethod
-    logger.info "Initialized as act_as_debian_package"
+    include InstanceMethods
+    logger.info "Initialized as acts_as_debian_package"
   end
 
-  module InstanceMethod
+  module InstanceMethods
     def to_s
       self.name
     end

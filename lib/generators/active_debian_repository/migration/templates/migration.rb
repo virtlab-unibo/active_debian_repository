@@ -16,8 +16,11 @@ class ActiveDebianRepositoryMigration < ActiveRecord::Migration
 
     create_table :changelogs, :force => true do |t|
       t.integer "package_id",  :null => false
-      t.string  "version"
-      t.text    "description"
+      t.string  "version",  :null => false
+      t.string  "distributions",  :null => false
+      t.string  "date",  :null => false
+      t.string  "urgency",  :null => false
+      t.text    "description",  :null => false
     end
 
     add_index "changelogs", ["package_id"], :name => "package_id"

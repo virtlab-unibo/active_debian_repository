@@ -31,7 +31,7 @@ It handles the debian source (Repository, as in
 ```ruby
 class AptSource < ActiveRecord::Base
   has_many :packages
-  act_as_apt_source
+  acts_as_apt_source
 end
 ```
 
@@ -68,12 +68,12 @@ is taken from
 ### ActiveDebianRepository::Package
 
 in your project you use this component adding
-`act_as_debian_package` in your model (< ActiveRecord::Base).
+`acts_as_debian_package` in your model (< ActiveRecord::Base).
 
 ```ruby
 class Package < ActiveRecord::Base
   belongs_to :archive
-  act_as_debian_package :section      => 'vlab',
+  acts_as_debian_package :section      => 'vlab',
                         :homepage_proc => lambda {|p| "https://www.virtlab.unibo.it/cpkg/courses/#{p.course.id}"},
                         :maintainer   => "Unibo Virtlab",
                         :email        => "support@virtlab.unibo.it",

@@ -41,8 +41,11 @@ ActiveRecord::Schema.define do
 
   create_table :changelogs, :force => true do |t| 
     t.integer "package_id",  :null => false
-    t.string  "version"
-    t.text    "description"
+    t.string  "version",  :null => false
+    t.text    "description",  :null => false
+    t.string  "date",  :null => false
+    t.string  "urgency",  :null => false
+    t.string  "distributions",  :null => false
   end 
 
 end

@@ -23,6 +23,18 @@ module ActiveDebianRepository
       opts.each {|k,v| @config[k.to_sym] = v if @valid_config_keys.include? k.to_sym}
     end
 
+    # Create the directory tree of the repository.
+    #
+    # * *Args*    :
+    # * *Returns* :
+    #   -
+    # * *Raises* :
+    #   - ++ ->
+    #
+    def create
+
+    end
+
     # Create the directory for the package 
     # in the repository directory tree.
     #

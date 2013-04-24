@@ -10,14 +10,16 @@ load(File.dirname(__FILE__) + "/schema.rb")
 
 class Aptsource < ActiveRecord::Base
   has_many :packages
-  act_as_apt_source
+  acts_as_apt_source
 end
 
 class Package < ActiveRecord::Base
   belongs_to :aptsource
   has_many   :items
   has_many   :scripts
-  act_as_debian_package :install_dir => '/usr/share/unibo',
+  has_many   :changelogs
+
+  acts_as_debian_package :install_dir => '/usr/share/unibo',
                         :homepage_proc => lambda {|p| "http://example.it/cpkg/#{p.my_meth}"},
                         :repo_dir    => '/var/www/repo/dists/packages',
                         :maintainer  => "Unibo Virtlab",
@@ -53,6 +55,13 @@ class Script < ActiveRecord::Base
   def to_s
     self.attach_file_name
   end
+end
+
+class Changelog < ActiveRecord::Base
+  belongs_to :package
+
+  acts_as_debian_changelog
+
 end
 
 FactoryGirl.find_definitions
