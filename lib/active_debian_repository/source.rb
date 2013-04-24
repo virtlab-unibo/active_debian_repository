@@ -2,6 +2,7 @@ module ActiveDebianRepository
   module Source
 
     ARCH_LIST = ['binary-amd64', 'binary-i386', 'source']
+    WGET = '/usr/bin/wget'
     BUNZIP2 = '/bin/bunzip2 -q'
     GUNZIP = '/bin/gunzip -q'
 
@@ -48,10 +49,10 @@ module ActiveDebianRepository
       def update_db_from_net
         packages_file = Tempfile.new('Packages', '/tmp') 
         begin
-          #p %Q^"wget -q "#{self.safe_url('bz2')}" -O - | #{BUNZIP2} > #{packages_file.path}"^
-          #p %Q^"wget -q "#{self.safe_url('gz')}" -O - | #{GUNZIP} > #{packages_file.path}"^
-          `wget -q "#{self.safe_url('bz2')}" -O - | #{BUNZIP2} > #{packages_file.path}`
-          `wget -q "#{self.safe_url('gz')}" -O - | #{GUNZIP} > #{packages_file.path}` unless $?.success?
+          logger.info %Q^"#{WGET} -q "#{self.safe_url('bz2')}" -O - | #{BUNZIP2} > #{packages_file.path}"^
+          logger.info %Q^"or #{WGET} -q "#{self.safe_url('gz')}" -O - | #{GUNZIP} > #{packages_file.path}"^
+          `#{WGET} -q "#{self.safe_url('bz2')}" -O - | #{BUNZIP2} > #{packages_file.path}`
+          `#{WGET} -q "#{self.safe_url('gz')}" -O - | #{GUNZIP} > #{packages_file.path}` unless $?.success?
           update_db(packages_file)
         ensure
           packages_file.close
