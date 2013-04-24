@@ -1,6 +1,6 @@
 ActiveRecord::Schema.define do
 
-  create_table "sources", :force => true do |t|
+  create_table "aptsources", :force => true do |t|
     t.string  "uri",          :limit => 250
     t.string  "distribution", :limit => 50
     t.string  "component",    :limit => 50
@@ -8,7 +8,7 @@ ActiveRecord::Schema.define do
   end
 
   create_table "packages", :force => true do |t|
-    t.integer "source_id"
+    t.integer "aptsource_id"
     t.integer "course_id"
     t.string  "name",        :null => false
     t.string  "description"

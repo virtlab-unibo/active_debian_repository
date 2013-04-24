@@ -17,15 +17,15 @@ And then execute:
 
 ActiveDebianRepository has the following components:
 
-### ActiveDebianRepository::Source
+### ActiveDebianRepository::AptSource
 
 It handles the debian source (Repository, as in 
 /etc/apt/sources.list), for example
 
 ```ruby
-class Source < ActiveRecord::Base
+class AptSource < ActiveRecord::Base
   has_many :packages
-  act_as_debian_source
+  act_as_apt_source
 end
 ```
 
@@ -34,7 +34,7 @@ to the line `deb http://mi.mirror.garr.it/mirrors/debian/ stable main`
 in `/etc/apt/sources.list`, just do
 
 ```ruby
-archive = Source.new(:uri => 'http://mi.mirror.garr.it/mirrors/debian',
+source = AptSource.new(:uri => 'http://mi.mirror.garr.it/mirrors/debian',
                      :distribution => 'stable',
                      :component => 'main',
                      :arch => 'binary-amd64')
@@ -47,14 +47,14 @@ can be updated with each package in the archive. With the method
 self.db_attrbutes you get the correct attributes for database.
 
 ```ruby
-archive = Source.new(...)
-archive.update_db_from_net
+source = AptSource.new(...)
+source.update_db_from_net
 ```
 
 all `archive.packages` are inserted in database with their
 metadata (name, description, version...). The information
 is taken from 
-`archive.url`
+`source.url`
 
 
 

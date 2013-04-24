@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Source" do
+describe "Aptsource" do
 
   before(:all) do
     @test_file = File.dirname(__FILE__) + "/../../testdata/Packages"
@@ -12,14 +12,14 @@ describe "Source" do
   end
   
   it "should insert data in clean database" do
-    a = FactoryGirl.create(:source)
+    a = FactoryGirl.create(:aptsource)
     a.update_db(@test_file)
     a.packages.where(:name => '0ad').first.name.should == '0ad'
     a.packages.where(:name => 'adabrowse').first.version.should == '4.0.3-5'
   end
 
   it "should update database" do
-    a = FactoryGirl.create(:source)
+    a = FactoryGirl.create(:aptsource)
     a.update_db(@test_file)
     puts "-----------------------------------------------------"
     a.update_db(@test_file_different)
@@ -28,7 +28,7 @@ describe "Source" do
   end
 
   it "should update database downloading from network" do
-    a = FactoryGirl.create(:source, {uri: 'http://mozilla.debian.net',
+    a = FactoryGirl.create(:aptsource, {uri: 'http://mozilla.debian.net',
                                       distribution: 'squeeze-backports', 
                                       component: 'iceweasel-release', 
                                       arch: 'binary-i386'})

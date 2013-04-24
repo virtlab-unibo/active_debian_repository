@@ -4,7 +4,7 @@ describe "Package base" do
 
   before(:all) do
     @test_file = File.dirname(__FILE__) + "/../../testdata/Packages"
-    a = FactoryGirl.create(:source)
+    a = FactoryGirl.create(:aptsource)
     a.update_db(@test_file)
   end
 
