@@ -13,7 +13,8 @@ describe "Build packages with scripts" do
      exit 0]
     @preinst_file = "/tmp/preprova"
     @postinst_file = "/tmp/postprova"
-    @expected_file_name = File.join(REPO, @package.deb_file_name)
+    @equivs = ActiveDebianRepository::Equivs.new(@package, REPO)
+    @expected_file_name = File.join(REPO, @equivs.package_filename)
   end
 
   before(:each) do
@@ -23,7 +24,7 @@ describe "Build packages with scripts" do
   it "should create a deb with a postinst script " do
     File.open(@postinst_file, "w") { |f| f.write(@script) }
     @package.add_script(:postinst, @postinst_file)
-    ActiveDebianRepository::Equivs.new(@package, REPO).create.should be_true
+    @equivs.create.should be_true
     Dir.mktmpdir do |tmp_dir|
       res = `dpkg -e #{@expected_file_name} #{tmp_dir}`
       $?.success?.should be_true

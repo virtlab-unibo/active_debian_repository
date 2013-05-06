@@ -7,8 +7,9 @@ describe "Build packages with files" do
 
   before(:all) do
     @package = FactoryGirl.create(:package)
+    @equivs = ActiveDebianRepository::Equivs.new(@package, REPO)
     # delete the package if already exists 
-    @expected_file_name = File.join(REPO, @package.deb_file_name)
+    @expected_file_name = File.join(REPO, @equivs.package_filename)
     File.delete(@expected_file_name) if File.exists? @expected_file_name
     
     # create a dummy file on disk
@@ -28,7 +29,7 @@ describe "Build packages with files" do
   end
 
   it "should successfully create a package with a file" do
-    ActiveDebianRepository::Equivs.new(@package, REPO).create.should be_true
+    @equivs.create.should be_true
   end
     
   it "should contain an attach file with the correct content" do
@@ -37,7 +38,7 @@ describe "Build packages with files" do
       $?.success?.should be_true
       file = @package.items[0]
       attach = File.join(tmp_dir, file.install_path, file.name)
-      p attach
+      p "FILE ATTACCHED: #{attach}"
       File.exists?(attach).should be_true
       File.open(attach, 'r'){|file| file.readline.should == @random_string}
     end

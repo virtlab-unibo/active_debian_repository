@@ -8,15 +8,14 @@ describe "Equivs" do
   # delete previous package and create new
   before(:all) do
     @package = FactoryGirl.build(:package)
-    @expected_file_name = File.join(REPO, @package.deb_file_name)
-    p @expected_file_name
-    p @package
+    @equivs = ActiveDebianRepository::Equivs.new(@package, REPO)
+    @expected_file_name = File.join(REPO, @equivs.package_filename)
     File.delete(@expected_file_name) if File.exists? @expected_file_name
-    ActiveDebianRepository::Equivs.new(@package, REPO).create.should be_true
+    @equivs.create.should be_true
   end
 
   it "should create dpkg file with correct name and in correct dir" do
-    File.exists?(@expected_file_name)
+    File.exists?(@equivs.package_filename)
   end
 
   it "should be extractable with dpkg and contain in /usr/share/doc/... README.Debian" do

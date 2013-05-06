@@ -20,7 +20,8 @@ module Package
       :section        => 'Misc',
       :homepage_proc  => lambda {|p| "http://localhost/debutils/#{p.name}"},
       :maintainer     => 'Maintainer',
-      :email          => 'debutils@example.com'
+      :email          => 'debutils@example.com',
+      :architecture   => 'all'
     }.merge(options)
 
     include InstanceMethods
@@ -116,7 +117,17 @@ module Package
     def maintainer
        "#{package_options[:maintainer]}"
     end
+    #
+    # * *Args*    :
+    # * *Returns* :
+    #   - Return the maintainer's name
+    # * *Raises* :
+    #
+    def architecture 
+       "#{package_options[:architecture]}"
+    end
 
+      
     #
     # * *Args*    :
     # * *Returns* :
@@ -143,8 +154,26 @@ module Package
     #   - Return the complete filename with .deb extension
     # * *Raises* :
     #
-    def deb_file_name
-      "#{self.name}_#{self.version}_all.deb"
+#    def deb_file_name
+#      "#{self.name}_#{self.version}_all.deb"
+#    end
+
+    # 
+    # * *Args*    :
+    # - type: the symbol representing the type of the script
+    # * *Returns* :
+    #   - Return the path of the script identimied by the type
+    #   - nil if no such a script exist.
+    # * *Raises* :
+    #
+    def get_script type
+      result = nil
+      self.scripts.each do |script|
+        if script.stype.to_sym == type.to_sym
+          result = script.attach.path
+        end
+      end
+      result
     end
 
     # * *Args*    :

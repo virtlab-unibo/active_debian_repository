@@ -3,10 +3,8 @@ require 'tmpdir'
 module ActiveDebianRepository
   class Equivs
 
-    PRIORITY     = "optional"
-    ARCHITECTURE = "all"
-    STD_VERSION  = "3.6.2"
     EQUIVS_BUILD_COMMAND = "/usr/bin/equivs-build"
+
 
     # deb = Equivs.new(package, dest_dir)
     # example Equivs.new(package, '/var/www/debian/virtlab')
@@ -35,14 +33,13 @@ module ActiveDebianRepository
     def create
       begin
         Dir.mktmpdir do |tmp_dir|
-          copy_files(tmp_dir)
           equivs_build!(tmp_dir)
         end
       rescue => err
         ActiveRecord::Base.logger.info("ERROR in Equivs.create: #{err}")
         return false
       end
-      File.join(@dest_dir, @package.deb_file_name)
+      File.join(@dest_dir, self.package_filename)
     end
 
     # Create debian package file (copy files and exec equiv_build)
@@ -56,23 +53,38 @@ module ActiveDebianRepository
       create || raise("Errors in the package creation")
     end
 
-    # copy files (@file = @package.documents) in tmp_dir and fill
-    # @files_equivs_string the string relative to file in equivs-control
     #
     # * *Args*    :
-    #   - +tmp_dir+ -> where to put the files during the build. 
     # * *Returns* :
     #   -
     # * *Raises* :
-    def copy_files(tmp_dir)
-      @files_equivs_string = @package.items.empty? ? "# Files" : "Files: "
+    def files
+      files_equivs = ""
       @package.items.each do |file|
-        FileUtils.cp(file.attach.path, tmp_dir)
-        # appunti.txt /usr/share/unibo/course_name/appunti.txt 
-        # this works on WHEEZY or higher (see git checkout squeeze)
-        @files_equivs_string += "#{file.attach_file_name} #{file.install_path}\n\t"
+        # path/appunti.txt /usr/share/unibo/course_name/appunti.txt 
+        # this works on WHEEZY or higher 
+        files_equivs += "#{file.attach.path} #{file.install_path}\n\t"
       end
+      files_equivs
     end
+
+    #
+    # * *Args*    :
+    # * *Returns* :
+    #   -
+    # * *Raises* :
+    # FIXME: Delete it 
+    #def format_description (short_description, long_description="")
+    #  res = short_description
+    #  long_description.each_line do |line|
+    #    if line.strip.empty?
+    #      res << " .\n"
+    #    else
+    #      res << " #{line}"
+    #    end
+    #  end
+    #  res.strip
+    #end
 
     #
     # * *Args*    :
@@ -91,60 +103,125 @@ module ActiveDebianRepository
       end
       res.strip
     end
-
-    # format the script list in order to add
-    # it to the equivis control file
-    #
-    # * *Args*    :
-    # * *Returns* :
-    #   -
-    # * *Raises* :
-    def scripts_string 
-      scripts_str = ""
-      @package.scripts.each do |script|
-        #FileUtils.cp(script.attach.path, tmp_dir)
-        scripts_str += "#{script.stype.to_s.capitalize}: #{script.attach.path}\n"
+    
+    def to_s
+      # Comphrensive list of equivs options.
+      # Most of them are not mandatory. Leave
+      # the option nil if you don't need it.
+      options = {
+        :source            => nil,
+        :section           => @package.section,
+        :priority          => "optional",
+        :homepage          => @package.homepage,
+        :standards_version => "3.9.2",
+        :package           => @package.name,
+        :version           => @package.version,
+        :maintainer        => self.maintainer, 
+        :pre_depends       => nil,
+        :depends           => nil,
+        :reccomends        => nil,
+        :suggests          => nil,
+        :provides          => nil,
+        :replaces          => nil,
+        :architecture      => "all",
+        :copyright         => nil,
+        :changelog         => nil,
+        :readme            => nil,
+        :postinst          => self.postinst,
+        :preinst           => self.preinst,
+        :postrm            => self.postrm,
+        :prerm             => self.prerm,
+        :extra_files       => nil,
+        :files             => self.files,
+        :description       => self.description 
+      }
+      control = ""
+      options.each do |k, v|
+        if v != nil and v != "" #FIXME: we definitely need to improve this test.
+          control << k.to_s.split('_').map(&:capitalize).join('-') << ": " << v << "\n"
+        end
       end
-      scripts_str.strip 
+      puts control
+      control
     end
 
-    # TODO refactor with some template method
-    # Description: <single line synopsis>
-    #  <extended description over several lines>
-    #  http://www.debian.org/doc/debian-policy/ch-controlfields.html#s-f-Description
     #
     # * *Args*    :
     # * *Returns* :
     #   -
     # * *Raises* :
-    def control_string 
-      %Q[Section: #{@package.section}
-Priority: #{PRIORITY}
-Homepage: #{@package.homepage}
-Standards-Version: #{STD_VERSION}
-
-Package: #{@package.name}
-Version: #{@package.version}
-Maintainer: #{self.maintainer_line}
-Depends: #{@package.depends}
-Architecture: #{ARCHITECTURE}
-#{scripts_string}
-#{@files_equivs_string}
-Description: #{self.description}
-]
+    def maintainer
+      if @package.class.method_defined? :email and @package.email 
+        "#{@package.maintainer} <#{@package.email}>"
+      else
+        "#{@package.maintainer} <dummy@email-not-provided.no>"
+      end
     end
 
     #
     # * *Args*    :
-    #   - +package+ -> Package object
-    #   - +dest_dir+ -> where to put the package after the build. 
     # * *Returns* :
     #   -
     # * *Raises* :
-    def maintainer_line
-      "#{@package.maintainer} <#{@package.email}>"
+    def package_filename
+      "#{@package.name}_#{@package.version}_#{@package.architecture}.deb"
     end
 
+    #
+    # * *Args*    :
+    # * *Returns* :
+    #   -
+    # * *Raises* :
+    def postrm
+      @package.get_script :postrm
+
+    end
+
+    #
+    # * *Args*    :
+    # * *Returns* :
+    #   -
+    # * *Raises* :
+    def prerm
+      @package.get_script :prerm
+    end
+
+    #
+    # * *Args*    :
+    # * *Returns* :
+    #   -
+    # * *Raises* :
+    def postinst
+      @package.get_script :postinst
+    end
+
+    #
+    # * *Args*    :
+    # * *Returns* :
+    #   -
+    # * *Raises* :
+    def preinst
+      @package.get_script :preinst
+    end
+
+    #
+    # * *Args*    :
+    # * *Returns* :
+    #   -
+    # * *Raises* :
+    def name
+      @package.name.gsub(' ', '-') # not really necessary
+    end
+
+    #
+    # * *Args*    :
+    # * *Returns* :
+    #   -
+    # * *Raises* :
+    #
+    def depends
+      @package.depends
+    end
     #
     # * *Args*    :
     #   - +tmp_dir+ -> where to put the control file during the build. 
@@ -152,8 +229,7 @@ Description: #{self.description}
     #   -
     # * *Raises* :
     def control_file(tmp_dir)
-      clean_name = @package.name.gsub(' ', '-') # not really necessary
-      File.join(tmp_dir, "#{clean_name}-control")
+      File.join(tmp_dir, "#{self.name}-control")
     end
 
     # runs equivs build
@@ -166,8 +242,8 @@ Description: #{self.description}
     def equivs_build!(tmp_dir)
       # create equivs_control file
       File.open(control_file(tmp_dir), 'w') do |f|
-        f.puts control_string 
-        ActiveRecord::Base.logger.debug control_string 
+        f.puts self.to_s # control_string 
+        ActiveRecord::Base.logger.debug self.to_s #control_string 
       end
 
       # run equivs-build
@@ -177,7 +253,7 @@ Description: #{self.description}
         ActiveRecord::Base.logger.debug "#{EQUIVS_BUILD_COMMAND} returns #{res}"
         if $?.success?
           # mv can raise
-          FileUtils.mv(@package.deb_file_name, @dest_dir, :force => true)
+          FileUtils.mv(self.package_filename, @dest_dir, :force => true)
         else
           ActiveRecord::Base.logger.debug "Equivs-build failed"
           raise "Equivs-build failed"
