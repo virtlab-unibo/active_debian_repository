@@ -33,6 +33,7 @@ module ActiveDebianRepository
     def create
       begin
         Dir.mktmpdir do |tmp_dir|
+          copy_files(tmp_dir)
           equivs_build!(tmp_dir)
         end
       rescue => err
@@ -63,9 +64,18 @@ module ActiveDebianRepository
       @package.items.each do |file|
         # path/appunti.txt /usr/share/unibo/course_name/appunti.txt 
         # this works on WHEEZY or higher 
-        files_equivs += "#{file.attach.path} #{file.install_path}\n\t"
+        puts 
+        files_equivs += "#{file.attach_file_name} #{File.join(file.install_path, "")}\n\t"
       end
       files_equivs
+    end
+
+
+    def copy_files dest_dir
+      @package.items.each do |file|
+        puts "cp #{file.attach.path} #{File.join(dest_dir,"")}"
+        FileUtils.cp(file.attach.path, File.join(dest_dir, ""))
+      end
     end
 
     #
