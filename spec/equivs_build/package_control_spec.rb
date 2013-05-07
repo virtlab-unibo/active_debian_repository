@@ -10,13 +10,13 @@ describe "Equivs control string method" do
 
   # in spec_helper abbiamo definito i default di repo.... 
   it "should create correct control string" do
-    ActiveDebianRepository::Equivs.new(@package, REPO).to_s.should == "Section: Misc\nPriority: optional\nHomepage: http://example.it/cpkg/my_meth_result\nStandards-Version: 3.9.2\nPackage: test-name\nVersion: 1.2.3\nMaintainer: Unibo Virtlab <info@virtlab.unibo.it>\nArchitecture: all\nDescription: I'm a short description\n I'm a\n .\n description\n .\n on three lines\n"
+    ActiveDebianRepository::Equivs.new(@package, REPO).to_s.should == "Section: Misc\nPriority: optional\nHomepage: http://example.it/cpkg/test\nStandards-Version: 3.9.2\nPackage: test-name\nVersion: 1.2.3\nMaintainer: Unibo Virtlab <info@virtlab.unibo.it>\nArchitecture: all\nDescription: I'm a short description\n I'm a\n .\n description\n .\n on three lines\n"
   end
 
   # in spec_helper abbiamo definito i default di repo.... 
   it "should create correct control with empty lines in long_description" do
     @package.long_description = "description\n\n with spaces\n \n and notspaces"
-    ActiveDebianRepository::Equivs.new(@package, REPO).to_s.should == "Section: Misc\nPriority: optional\nHomepage: http://example.it/cpkg/my_meth_result\nStandards-Version: 3.9.2\nPackage: test-name\nVersion: 1.2.3\nMaintainer: Unibo Virtlab <info@virtlab.unibo.it>\nArchitecture: all\nDescription: I'm a short description\n description\n .\n  with spaces\n .\n  and notspaces\n"
+    ActiveDebianRepository::Equivs.new(@package, REPO).to_s.should == "Section: Misc\nPriority: optional\nHomepage: http://example.it/cpkg/test\nStandards-Version: 3.9.2\nPackage: test-name\nVersion: 1.2.3\nMaintainer: Unibo Virtlab <info@virtlab.unibo.it>\nArchitecture: all\nDescription: I'm a short description\n description\n .\n  with spaces\n .\n  and notspaces\n"
   end
 
   it "should create correct control string with postinst and preinst script into it" do

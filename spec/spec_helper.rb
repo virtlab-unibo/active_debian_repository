@@ -19,14 +19,8 @@ class Package < ActiveRecord::Base
   has_many   :scripts
   has_many   :changelogs
 
-  acts_as_debian_package :install_dir => '/usr/share/unibo',
-                        :homepage_proc => lambda {|p| "http://example.it/cpkg/#{p.my_meth}"},
-                        :repo_dir    => '/var/www/repo/dists/packages',
-                        :maintainer  => "Unibo Virtlab",
-                        :email       => "info@virtlab.unibo.it"
-  def my_meth
-    "my_meth_result" 
-  end
+  acts_as_debian_package :maintainer   => 'Unibo Virtlab',
+                         :email        => 'info@virtlab.unibo.it'
 end
 
 #TODO: We need to consider Acts_as_debian_item 

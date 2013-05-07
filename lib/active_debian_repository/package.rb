@@ -4,8 +4,6 @@ require 'tempfile'
 module ActiveDebianRepository
 module Package
 
-  # options:
-  #   :homepage_proc => lambda {|p| "http://www.example.it/packages/#{p.name}"},
   def acts_as_debian_package(options={})
 
     # Declare a class-level attribute whose value is inheritable by subclasses.
@@ -18,16 +16,16 @@ module Package
 
     self.package_options = {
       :section        => 'Misc',
-      :homepage_proc  => lambda {|p| "http://localhost/debutils/#{p.name}"},
       :maintainer     => 'Maintainer',
       :email          => 'debutils@example.com',
-      :architecture   => 'all'
+      :architecture   => 'all',
+      :priority       => 'optional',
+      :standards_version => '3.9.2'
     }.merge(options)
 
     include InstanceMethods
     logger.info "Initialized as acts_as_debian_package"
   end
-
   module InstanceMethods
     def to_s
       self.name
@@ -97,55 +95,25 @@ module Package
       end
     end
 
-    # generates the homepage from option homepage_proc
+    # Return the default value if the method name is a 
+    # known package property. Raise otherwise.
+    # TODO: do we have to handle nil cases?
     #
     # * *Args*    :
     # * *Returns* :
-    #   - Return the homepage url.
+    #   - Return the property value if defined.
     # * *Raises* :
+    #   - NoMethodError 
     #
-    def homepage
-      package_options[:homepage_proc].call(self)
-    end
-
-    #
-    # * *Args*    :
-    # * *Returns* :
-    #   - Return the maintainer's name
-    # * *Raises* :
-    #
-    def maintainer
-       "#{package_options[:maintainer]}"
-    end
-    #
-    # * *Args*    :
-    # * *Returns* :
-    #   - Return the maintainer's name
-    # * *Raises* :
-    #
-    def architecture 
-       "#{package_options[:architecture]}"
-    end
-
-      
-    #
-    # * *Args*    :
-    # * *Returns* :
-    #   - Return the package section
-    # * *Raises* :
-    #
-    def section
-      package_options[:section]
-    end
-
-    #
-    # * *Args*    :
-    # * *Returns* :
-    #   - return the email of the maintainer
-    # * *Raises* :
-    #
-    def email
-      package_options[:email]
+    def method_missing (method_name, *args, &block)
+      if not package_options.has_key? method_name
+        raise NoMethodError, <<ERRORINFO
+method: #{method_name}
+args: #{args.inspect}
+on: #{self.to_yaml}
+ERRORINFO
+      end
+      self.package_options[method_name]
     end
 
     #

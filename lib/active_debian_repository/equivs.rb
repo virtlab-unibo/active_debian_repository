@@ -121,9 +121,9 @@ module ActiveDebianRepository
       options = {
         :source            => nil,
         :section           => @package.section,
-        :priority          => "optional",
+        :priority          => @package.priority,
         :homepage          => @package.homepage,
-        :standards_version => "3.9.2",
+        :standards_version => @package.standards_version, 
         :package           => @package.name,
         :version           => @package.version,
         :maintainer        => self.maintainer, 
@@ -133,7 +133,7 @@ module ActiveDebianRepository
         :suggests          => nil,
         :provides          => nil,
         :replaces          => nil,
-        :architecture      => "all",
+        :architecture      => @package.architecture,
         :copyright         => nil,
         :changelog         => nil,
         :readme            => nil,
@@ -147,7 +147,7 @@ module ActiveDebianRepository
       }
       control = ""
       options.each do |k, v|
-        if v != nil and v != "" #FIXME: we definitely need to improve this test.
+        if v != nil and v != "" #FIXME: we need to improve this test
           control << k.to_s.split('_').map(&:capitalize).join('-') << ": " << v << "\n"
         end
       end
@@ -161,11 +161,7 @@ module ActiveDebianRepository
     #   -
     # * *Raises* :
     def maintainer
-      if @package.class.method_defined? :email and @package.email 
         "#{@package.maintainer} <#{@package.email}>"
-      else
-        "#{@package.maintainer} <dummy@email-not-provided.no>"
-      end
     end
 
     #
