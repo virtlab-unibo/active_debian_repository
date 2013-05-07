@@ -107,24 +107,10 @@ module Package
     #
     def method_missing (method_name, *args, &block)
       if not package_options.has_key? method_name
-        raise NoMethodError, <<ERRORINFO
-method: #{method_name}
-args: #{args.inspect}
-on: #{self.to_yaml}
-ERRORINFO
+        super
       end
       self.package_options[method_name]
     end
-
-    #
-    # * *Args*    :
-    # * *Returns* :
-    #   - Return the complete filename with .deb extension
-    # * *Raises* :
-    #
-#    def deb_file_name
-#      "#{self.name}_#{self.version}_all.deb"
-#    end
 
     # 
     # * *Args*    :

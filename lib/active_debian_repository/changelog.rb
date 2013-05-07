@@ -8,7 +8,7 @@ module ActiveDebianRepository
 
       self.default_values = {
         :version        => "1.0",
-        :date           => date_line,
+        :date           => "Thu, 1 01 1972 00:00:00 +0200",
         :distributions  => "unstable",
         :urgency        => "low", # low, medium, high, emergency
         :description    => "No description provided"
@@ -23,8 +23,8 @@ module ActiveDebianRepository
     # of RFC 2822 and RFC 5322.
     #
     # day-of-week, dd month yyyy hh:mm:ss +zzzz
-    def date_line
-      Time.new.strftime("%a, %d %m %Y %H:%M:%S %z") 
+    def self.date_line
+      Time.new.strftime("%a, %d %b %Y %H:%M:%S %z") 
     end
 
     module InstanceMethods
@@ -63,15 +63,10 @@ module ActiveDebianRepository
       # known changelog property. Raise otherwise.
       # TODO: do we have to handle nil cases?
       def method_missing (method_name, *args, &block)
-        if default_values.has_key? method_name
-          default_values[method_name]
-        else
-          raise NoMethodError, <<ERRORINFO
-method: #{method_name}
-args: #{args.inspect}
-on: #{self.to_yaml}
-ERRORINFO
+        if not default_values.has_key? method_name
+          super
         end
+        default_values[method_name]
       end
       
     end

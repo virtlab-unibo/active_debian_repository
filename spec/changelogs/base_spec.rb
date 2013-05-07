@@ -31,9 +31,9 @@ describe "Changelog base " do
     @chlog.urgency.should == "high"
   end
 
-  it "date value should be settable 'Wed, 24 04 2013 16:34:23 +0200'" do
-    @chlog.date = "Wed, 24 04 2013 16:34:23 +0200"
-    @chlog.date.should == "Wed, 24 04 2013 16:34:23 +0200"
+  it "date value should be settable 'Wed, 24 May 2013 16:34:23 +0200'" do
+    @chlog.date = "Wed, 24 May 2013 16:34:23 +0200"
+    @chlog.date.should == "Wed, 24 May 2013 16:34:23 +0200"
   end
 
   it " distributions should be settable to 'precise'" do
@@ -66,7 +66,7 @@ describe "Changelog base " do
   description line
    minor fix
 
- -- Unibo Virtlab <info@virtlab.unibo.it>  Wed, 24 04 2013 16:34:23 +0200]
+ -- Unibo Virtlab <info@virtlab.unibo.it>  Wed, 24 May 2013 16:34:23 +0200]
   end
 
 end

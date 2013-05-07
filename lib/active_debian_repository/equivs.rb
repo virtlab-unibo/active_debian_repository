@@ -50,15 +50,17 @@ module ActiveDebianRepository
     # * *Returns* :
     #   -
     # * *Raises* :
+    #
     def create!
       create || raise("Errors in the package creation")
     end
 
-    #
+    # 
     # * *Args*    :
     # * *Returns* :
     #   -
     # * *Raises* :
+    #
     def files
       files_equivs = ""
       @package.items.each do |file|
@@ -70,8 +72,31 @@ module ActiveDebianRepository
       files_equivs
     end
 
+    # 
+    # * *Args*    :
+    # * *Returns* :
+    #   -
+    # * *Raises* :
+    #
+    def changelog_file
+      if @package.changelogs.size > 0
+        tfile = Tempfile.new('changelogs') 
+        File.open(tfile, 'a') do |f| 
+          @package.changelogs.reverse_each { |chlog| f.print chlog }
+        end
+        tfile.path
+      else
+        nil
+      end
+    end
 
-    def copy_files dest_dir
+    # 
+    # * *Args*    :
+    # * *Returns* :
+    #   -
+    # * *Raises* :
+    #
+    def copy_files(dest_dir)
       @package.items.each do |file|
         puts "cp #{file.attach.path} #{File.join(dest_dir,"")}"
         FileUtils.cp(file.attach.path, File.join(dest_dir, ""))
@@ -135,7 +160,7 @@ module ActiveDebianRepository
         :replaces          => nil,
         :architecture      => @package.architecture,
         :copyright         => nil,
-        :changelog         => nil,
+        :changelog         => self.changelog_file,
         :readme            => nil,
         :postinst          => self.postinst,
         :preinst           => self.preinst,
