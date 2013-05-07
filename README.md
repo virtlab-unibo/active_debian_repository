@@ -1,7 +1,10 @@
 # ActiveDebianRepository
 
 ActiveDebianRepository Gem is used in [Cpkg-on-rails](https://github.com/virtlab-unibo/cpkg-on-rails)
-to handle Debian repositories.
+to handle Debian repositories. Its main purpose is to create debian metapackages
+(packages with documents and dependencies but not installable software) and
+place it in the right folder under a debian repository.
+
 
 ## Installation
 
