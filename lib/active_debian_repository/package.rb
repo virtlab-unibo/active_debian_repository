@@ -4,31 +4,41 @@ require 'tempfile'
 module ActiveDebianRepository
 module Package
 
-  # options:
-  #   :homepage_proc => lambda {|p| "http://www.example.it/packages/#{p.name}"},
   def acts_as_debian_package(options={})
 
     # Declare a class-level attribute whose value is inheritable by subclasses.
     # Subclasses can change their own value and it will not impact parent class.
-    class_attribute :package_options
+    class_attribute :default_attributes
 
     # name must consist only of lower case letters (a-z), digits (0-9), plus (+) and minus (-) signs, and periods (.).
     # They must be at least two characters long and must start with an alphanumeric character.
     validates_format_of :name, :with => /^[a-z0-9][a-z0-9+.-]+$/, :message => :package_name_format
 
-    self.package_options = {
+    self.default_attributes = {
+      :name           => 'dummy',
       :section        => 'Misc',
-      :homepage_proc  => lambda {|p| "http://localhost/debutils/#{p.name}"},
       :maintainer     => 'Maintainer',
       :email          => 'debutils@example.com',
-      :architecture   => 'all'
+      :homepage       => 'http://www.virtlab.unibo.it',
+      :architecture   => 'all',
+      :priority       => 'optional',
+      :standards_version => '3.9.2',
+      :depends        => "",
+      :pre_depends    => "",
+      :suggests       => "",
+      :reccomends     => "",
+      :provides       => "",
+      :replaces       => "",
+      :version        => "0.1-1",
+      :short_description => "Package created by the Active_Debian_Repo gem.",
+      :long_description => ""
     }.merge(options)
 
     include InstanceMethods
     logger.info "Initialized as acts_as_debian_package"
   end
-
   module InstanceMethods
+
     def to_s
       self.name
     end
@@ -97,66 +107,22 @@ module Package
       end
     end
 
-    # generates the homepage from option homepage_proc
+    # Return the default value if the method name is a 
+    # known package property. Raise otherwise.
+    # TODO: do we have to handle nil cases?
     #
     # * *Args*    :
     # * *Returns* :
-    #   - Return the homepage url.
+    #   - Return the property value if defined.
     # * *Raises* :
+    #   - NoMethodError 
     #
-    def homepage
-      package_options[:homepage_proc].call(self)
+    def method_missing (method_name, *args, &block)
+      if not default_attributes.has_key? method_name
+        super
+      end
+      self.default_attributes[method_name]
     end
-
-    #
-    # * *Args*    :
-    # * *Returns* :
-    #   - Return the maintainer's name
-    # * *Raises* :
-    #
-    def maintainer
-       "#{package_options[:maintainer]}"
-    end
-    #
-    # * *Args*    :
-    # * *Returns* :
-    #   - Return the maintainer's name
-    # * *Raises* :
-    #
-    def architecture 
-       "#{package_options[:architecture]}"
-    end
-
-      
-    #
-    # * *Args*    :
-    # * *Returns* :
-    #   - Return the package section
-    # * *Raises* :
-    #
-    def section
-      package_options[:section]
-    end
-
-    #
-    # * *Args*    :
-    # * *Returns* :
-    #   - return the email of the maintainer
-    # * *Raises* :
-    #
-    def email
-      package_options[:email]
-    end
-
-    #
-    # * *Args*    :
-    # * *Returns* :
-    #   - Return the complete filename with .deb extension
-    # * *Raises* :
-    #
-#    def deb_file_name
-#      "#{self.name}_#{self.version}_all.deb"
-#    end
 
     # 
     # * *Args*    :

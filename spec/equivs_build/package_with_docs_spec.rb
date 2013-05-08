@@ -38,7 +38,6 @@ describe "Build packages with files" do
       $?.success?.should be_true
       file = @package.items[0]
       attach = File.join(tmp_dir, file.install_path, file.name)
-      p "FILE ATTACCHED: #{attach}"
       File.exists?(attach).should be_true
       File.open(attach, 'r'){|file| file.readline.should == @random_string}
     end

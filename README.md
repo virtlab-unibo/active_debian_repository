@@ -1,7 +1,10 @@
 # ActiveDebianRepository
 
 ActiveDebianRepository Gem is used in [Cpkg-on-rails](https://github.com/virtlab-unibo/cpkg-on-rails)
-to handle Debian repositories.
+to handle Debian repositories. Its main purpose is to create debian metapackages
+(packages with documents and dependencies but not installable software) and
+place it in the right folder under a debian repository.
+
 
 ## Installation
 
@@ -74,7 +77,7 @@ in your project you use this component adding
 class Package < ActiveRecord::Base
   belongs_to :archive
   acts_as_debian_package :section      => 'vlab',
-                        :homepage_proc => lambda {|p| "https://www.virtlab.unibo.it/cpkg/courses/#{p.course.id}"},
+                        :homepage => "https://www.virtlab.unibo.it/cpkg/",
                         :maintainer   => "Unibo Virtlab",
                         :email        => "support@virtlab.unibo.it",
 end
@@ -99,11 +102,12 @@ Given a `ActiveDebianRepository::Package` it provides a methods to create the de
 
 ```ruby
 package = ActiveDebianRepository::Package.first
-ActiveDebianRepository::Equivs.new(package, dest_dir).create
+equivs = ActiveDebianRepository::Equivs.new(package, dest_dir)
+equivs.create
 ```
 
-The file is created in `package.repo_dir` dir and 
-is named `package.deb_file_name`.
+The file is created in `dest_dir` dir and 
+is named `equivs.package_filename`.
 
 For example, given
 
