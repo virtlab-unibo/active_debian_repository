@@ -102,11 +102,12 @@ Given a `ActiveDebianRepository::Package` it provides a methods to create the de
 
 ```ruby
 package = ActiveDebianRepository::Package.first
-ActiveDebianRepository::Equivs.new(package, dest_dir).create
+equivs = ActiveDebianRepository::Equivs.new(package, dest_dir)
+equivs.create
 ```
 
-The file is created in `package.repo_dir` dir and 
-is named `package.deb_file_name`.
+The file is created in `dest_dir` dir and 
+is named `equivs.package_filename`.
 
 For example, given
 
