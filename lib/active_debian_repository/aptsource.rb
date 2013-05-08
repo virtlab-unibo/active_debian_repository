@@ -7,6 +7,9 @@ module ActiveDebianRepository
 
     def acts_as_apt_source(options={})
       include InstanceMethods
+
+      attr_accessor :spawn
+
       logger.info "Inizialized as acts_as_debian_source"
     end
 
@@ -48,11 +51,11 @@ module ActiveDebianRepository
       #   - 
       # * *Raises* :
       #
-      def update_db(package_file)
+      def update_db(packages_file)
         # Hash of name => version
         old_packages = self.packages.select([:name, :version]).inject({}){|res, p| res[p.name] = p.version; res}
 
-        ActiveDebianRepository::Parser.new(package_file).each do |p|
+        ActiveDebianRepository::Parser.new(packages_file).each do |p|
           if old_package_version = old_packages.delete(p['package']) # already there
             if old_package_version != p['version'] # different version... we need to update it
               self.packages.where(:name => p['package']).first.update_attributes(ActiveDebianRepository::Parser.db_attributes(p)) or raise p.inspect
@@ -61,7 +64,7 @@ module ActiveDebianRepository
             self.packages.create!(ActiveDebianRepository::Parser.db_attributes(p))
           end
         end
-        self.packages.where(:name => old_packages.keys).delete_all
+        self.packages.where(:name => old_packages.keys).delete_all unless old_packages.keys.empty?
       end
 
       #
@@ -70,18 +73,38 @@ module ActiveDebianRepository
       #   - 
       # * *Raises* :
       #
-      def update_db_from_net
-        packages_file = Tempfile.new('Packages', '/tmp')
-        begin
-          `wget -q "#{self.safe_url('bz2')}" -O - | #{BUNZIP2} > #{packages_file.path}`
-          `wget -q "#{self.safe_url('gz')}" -O - | #{GUNZIP} > #{packages_file.path}` unless $?.success?
+      def update_db_from_net(background = nil)
+        packages_file = "/tmp/Packages_#{Random.new_seed}"
+        `wget -q "#{self.safe_url('bz2')}" -O - | #{BUNZIP2} > #{packages_file}`
+        `wget -q "#{self.safe_url('gz')}" -O - | #{GUNZIP} > #{packages_file}` unless $?.success?
+        background ? update_db_in_background(packages_file) : update_db(packages_file)
+        # TODO FIXME
+        # File.unlink(packages_file)
+      end
+
+      #
+      # * *Args*    :
+      # * *Returns* :
+      #   - 
+      # * *Raises* :
+      #
+      def update_db_in_background(packages_file)
+        # FIXME
+        if update_db_running?
+          logger.info("AptSource already updating for #{self.inspect}: #{@spawn.inspect}")
+          return true
+        end
+        logger.info ("In update_db_in_background")
+        @spawn = Spawnling.new() do
+          logger.info("in spawn before running update_db") 
           update_db(packages_file)
-        ensure
-          packages_file.close
-          packages_file.unlink
         end
       end
 
+      def update_db_running?
+        return false unless @spawn
+        Spawnling.alive?(@spawn.handle)
+      end
     end
   end
 end

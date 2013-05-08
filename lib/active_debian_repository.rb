@@ -1,5 +1,7 @@
 require 'active_record'
 require "active_debian_repository/version"
+# gem 'spawn-block',
+require 'spawnling'
 
 module ActiveDebianRepository
 end
