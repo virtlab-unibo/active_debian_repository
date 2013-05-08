@@ -8,19 +8,30 @@ module Package
 
     # Declare a class-level attribute whose value is inheritable by subclasses.
     # Subclasses can change their own value and it will not impact parent class.
-    class_attribute :package_options
+    class_attribute :default_attributes
 
     # name must consist only of lower case letters (a-z), digits (0-9), plus (+) and minus (-) signs, and periods (.).
     # They must be at least two characters long and must start with an alphanumeric character.
     validates_format_of :name, :with => /^[a-z0-9][a-z0-9+.-]+$/, :message => :package_name_format
 
-    self.package_options = {
+    self.default_attributes = {
+      :name           => 'dummy',
       :section        => 'Misc',
       :maintainer     => 'Maintainer',
       :email          => 'debutils@example.com',
+      :homepage       => 'http://www.virtlab.unibo.it',
       :architecture   => 'all',
       :priority       => 'optional',
-      :standards_version => '3.9.2'
+      :standards_version => '3.9.2',
+      :depends        => "",
+      :pre_depends    => "",
+      :suggests       => "",
+      :reccomends     => "",
+      :provides       => "",
+      :replaces       => "",
+      :version        => "0.1-1",
+      :short_description => "Package created by the Active_Debian_Repo gem.",
+      :long_description => ""
     }.merge(options)
 
     include InstanceMethods
@@ -106,10 +117,10 @@ module Package
     #   - NoMethodError 
     #
     def method_missing (method_name, *args, &block)
-      if not package_options.has_key? method_name
+      if not default_attributes.has_key? method_name
         super
       end
-      self.package_options[method_name]
+      self.default_attributes[method_name]
     end
 
     # 

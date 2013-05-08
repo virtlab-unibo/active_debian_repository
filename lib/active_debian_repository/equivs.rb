@@ -66,7 +66,6 @@ module ActiveDebianRepository
       @package.items.each do |file|
         # path/appunti.txt /usr/share/unibo/course_name/appunti.txt 
         # this works on WHEEZY or higher 
-        puts 
         files_equivs += "#{file.attach_file_name} #{File.join(file.install_path, "")}\n\t"
       end
       files_equivs
@@ -98,28 +97,9 @@ module ActiveDebianRepository
     #
     def copy_files(dest_dir)
       @package.items.each do |file|
-        puts "cp #{file.attach.path} #{File.join(dest_dir,"")}"
         FileUtils.cp(file.attach.path, File.join(dest_dir, ""))
       end
     end
-
-    #
-    # * *Args*    :
-    # * *Returns* :
-    #   -
-    # * *Raises* :
-    # FIXME: Delete it 
-    #def format_description (short_description, long_description="")
-    #  res = short_description
-    #  long_description.each_line do |line|
-    #    if line.strip.empty?
-    #      res << " .\n"
-    #    else
-    #      res << " #{line}"
-    #    end
-    #  end
-    #  res.strip
-    #end
 
     #
     # * *Args*    :
@@ -139,6 +119,11 @@ module ActiveDebianRepository
       res.strip
     end
     
+    #
+    # * *Args*    :
+    # * *Returns* :
+    #   -
+    # * *Raises* :
     def to_s
       # Comphrensive list of equivs options.
       # Most of them are not mandatory. Leave
@@ -152,12 +137,12 @@ module ActiveDebianRepository
         :package           => @package.name,
         :version           => @package.version,
         :maintainer        => self.maintainer, 
-        :pre_depends       => nil,
-        :depends           => nil,
-        :reccomends        => nil,
-        :suggests          => nil,
-        :provides          => nil,
-        :replaces          => nil,
+        :pre_depends       => @package.pre_depends,
+        :depends           => @package.depends,
+        :reccomends        => @package.reccomends,
+        :suggests          => @package.suggests,
+        :provides          => @package.provides,
+        :replaces          => @package.replaces,
         :architecture      => @package.architecture,
         :copyright         => nil,
         :changelog         => self.changelog_file,
@@ -176,7 +161,6 @@ module ActiveDebianRepository
           control << k.to_s.split('_').map(&:capitalize).join('-') << ": " << v << "\n"
         end
       end
-      puts control
       control
     end
 
@@ -237,30 +221,12 @@ module ActiveDebianRepository
 
     #
     # * *Args*    :
-    # * *Returns* :
-    #   -
-    # * *Raises* :
-    def name
-      @package.name.gsub(' ', '-') # not really necessary
-    end
-
-    #
-    # * *Args*    :
-    # * *Returns* :
-    #   -
-    # * *Raises* :
-    #
-    def depends
-      @package.depends
-    end
-    #
-    # * *Args*    :
     #   - +tmp_dir+ -> where to put the control file during the build. 
     # * *Returns* :
     #   -
     # * *Raises* :
     def control_file(tmp_dir)
-      File.join(tmp_dir, "#{self.name}-control")
+      File.join(tmp_dir, "#{@package.name}-control")
     end
 
     # runs equivs build
