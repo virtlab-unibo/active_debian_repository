@@ -81,7 +81,7 @@ module ActiveDebianRepository
       if @package.changelogs.size > 0
         tfile = Tempfile.new('changelogs') 
         File.open(tfile, 'a') do |f| 
-          @package.changelogs.reverse_each { |chlog| f.print chlog }
+          @package.changelogs.reverse_each { |chlog| f.puts chlog }
         end
         tfile.path
       else

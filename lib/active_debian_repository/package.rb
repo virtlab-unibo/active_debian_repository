@@ -38,6 +38,7 @@ module Package
     logger.info "Initialized as acts_as_debian_package"
   end
   module InstanceMethods
+
     def to_s
       self.name
     end
