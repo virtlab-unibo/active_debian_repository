@@ -77,7 +77,7 @@ in your project you use this component adding
 class Package < ActiveRecord::Base
   belongs_to :archive
   acts_as_debian_package :section      => 'vlab',
-                        :homepage_proc => lambda {|p| "https://www.virtlab.unibo.it/cpkg/courses/#{p.course.id}"},
+                        :homepage => "https://www.virtlab.unibo.it/cpkg/",
                         :maintainer   => "Unibo Virtlab",
                         :email        => "support@virtlab.unibo.it",
 end
