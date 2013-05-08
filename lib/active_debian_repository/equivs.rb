@@ -95,6 +95,38 @@ module ActiveDebianRepository
     #   -
     # * *Raises* :
     #
+    def copyright_file
+      if @package.copyright and @package.copyright != ""
+        tfile = Tempfile.new('copyright') 
+        File.open(tfile, 'w') { |f| f.puts @package.copyright }
+        tfile.path
+      else
+        nil
+      end
+    end
+
+    # 
+    # * *Args*    :
+    # * *Returns* :
+    #   -
+    # * *Raises* :
+    #
+    def readme_file
+      if @package.readme and @package.readme != ""
+        tfile = Tempfile.new('readme') 
+        File.open(tfile, 'w') { |f| f.puts @package.readme }
+        tfile.path
+      else
+        nil
+      end
+    end
+
+    # 
+    # * *Args*    :
+    # * *Returns* :
+    #   -
+    # * *Raises* :
+    #
     def copy_files(dest_dir)
       @package.items.each do |file|
         FileUtils.cp(file.attach.path, File.join(dest_dir, ""))
@@ -129,7 +161,7 @@ module ActiveDebianRepository
       # Most of them are not mandatory. Leave
       # the option nil if you don't need it.
       options = {
-        :source            => nil,
+        :source            => nil, # probably we'll never implement it
         :section           => @package.section,
         :priority          => @package.priority,
         :homepage          => @package.homepage,
@@ -144,20 +176,20 @@ module ActiveDebianRepository
         :provides          => @package.provides,
         :replaces          => @package.replaces,
         :architecture      => @package.architecture,
-        :copyright         => nil,
+        :copyright         => self.copyright_file,
         :changelog         => self.changelog_file,
-        :readme            => nil,
+        :readme            => self.readme_file,
         :postinst          => self.postinst,
         :preinst           => self.preinst,
         :postrm            => self.postrm,
         :prerm             => self.prerm,
-        :extra_files       => nil,
+        :extra_files       => nil, # probably we'll never implement it
         :files             => self.files,
         :description       => self.description 
       }
       control = ""
       options.each do |k, v|
-        if v != nil and v != "" #FIXME: we need to improve this test
+        if v != nil and v != "" #TODO: think if this test needs to be improved 
           control << k.to_s.split('_').map(&:capitalize).join('-') << ": " << v << "\n"
         end
       end
@@ -220,7 +252,7 @@ module ActiveDebianRepository
     end
 
     #
-    # * *Args*    :
+    # * *Args*    
     #   - +tmp_dir+ -> where to put the control file during the build. 
     # * *Returns* :
     #   -

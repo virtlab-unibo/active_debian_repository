@@ -30,6 +30,8 @@ module Package
       :provides       => "",
       :replaces       => "",
       :version        => "0.1-1",
+      :copyright      => "", # default is GPLv2
+      :readme         => "", # default to a generic readme
       :short_description => "Package created by the Active_Debian_Repo gem.",
       :long_description => ""
     }.merge(options)
