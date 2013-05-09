@@ -17,7 +17,7 @@ ActiveRecord::Schema.define do
     t.string  "version"
   end
 
-  create_table :items, :force => true do |t|
+  create_table :documents, :force => true do |t|
     t.integer  "package_id",          :null =>     false
     t.string   "name",                :limit => 200
     t.string   "install_path"

@@ -19,7 +19,7 @@ describe "Build packages with files" do
     File.open(file_tmp, 'w') {|file| file.print @random_string}
 
     # add the file to the package
-    item = @package.items.new
+    item = @package.documents.new
     item.name = 'pippo_Pluto_paperino'
     item.install_path = "/usr/share/test"
     File.open(file_tmp, 'rb') do |f| 
@@ -36,7 +36,7 @@ describe "Build packages with files" do
     Dir.mktmpdir do |tmp_dir|
       res = `dpkg -x #{@expected_file_name} #{tmp_dir}`
       $?.success?.should be_true
-      file = @package.items[0]
+      file = @package.documents[0]
       attach = File.join(tmp_dir, file.install_path, file.name)
       File.exists?(attach).should be_true
       File.open(attach, 'r'){|file| file.readline.should == @random_string}

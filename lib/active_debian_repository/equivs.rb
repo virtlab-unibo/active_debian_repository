@@ -63,7 +63,7 @@ module ActiveDebianRepository
     #
     def files
       files_equivs = ""
-      @package.items.each do |file|
+      @package.documents.each do |file|
         # path/appunti.txt /usr/share/unibo/course_name/appunti.txt 
         # this works on WHEEZY or higher 
         files_equivs += "#{file.attach_file_name} #{File.join(file.install_path, "")}\n\t"
@@ -128,7 +128,7 @@ module ActiveDebianRepository
     # * *Raises* :
     #
     def copy_files(dest_dir)
-      @package.items.each do |file|
+      @package.documents.each do |file|
         FileUtils.cp(file.attach.path, File.join(dest_dir, ""))
       end
     end
