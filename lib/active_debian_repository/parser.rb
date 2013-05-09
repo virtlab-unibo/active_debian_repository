@@ -7,29 +7,6 @@ class Parser
     @line_regexp = Regexp.new('^(\S+): (.*)')
   end
 
-  # fast version with grep e sed
-  # ["2vcard!0.5-3", .... ]
-  # FIXME: We should remove this.
-  #
-  # * *Args*    :
-  # * *Returns* :
-  #   - Array
-  # * *Raises* :
-  #
-  def read_unique_id
-    res = Array.new
-    name = nil
-    Kernel.open("|grep '^Package: \\|^Version\: ' #{@filename} | sed -e 's/Package: \\|Version: //'").each do |line|
-      if name
-        res << "#{name}!#{line.chomp}"
-        name = nil
-      else
-        name = line.chomp
-      end
-    end
-    res
-  end
-
   #
   # * *Args*    :
   # * *Returns* :
@@ -63,11 +40,11 @@ class Parser
   # * *Raises* :
   #
   def self.db_attributes(p)
-    {:name        => p["package"],
+    {:name              => p["package"],
      :short_description => p["description"],
-     :depends     => p["depends"],
-     :version     => p["version"],
-     :long_description        => p["body"]}
+     :depends           => p["depends"],
+     :version           => p["version"],
+     :long_description  => p["body"]}
   end
 end
 end
