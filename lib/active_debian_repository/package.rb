@@ -12,7 +12,7 @@ module Package
 
     # name must consist only of lower case letters (a-z), digits (0-9), plus (+) and minus (-) signs, and periods (.).
     # They must be at least two characters long and must start with an alphanumeric character.
-    validates_format_of :name, :with => /^[a-z0-9][a-z0-9+.-]+$/, :message => :package_name_format
+    validates_format_of :name, :with => /\A[a-z0-9][a-z0-9+.-]+\z/, :message => :package_name_format
 
     self.default_attributes = {
       :name           => 'dummy',
