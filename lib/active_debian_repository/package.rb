@@ -104,7 +104,11 @@ module Package
     #
     def depends_on
       self.depends.split(', ').inject([]) do |res, name|
-        res << self.class.where(:name => name.split(/ /)[0]).first
+        if p = self.class.where(:name => name.split(/ /)[0]).first
+          res << p
+        else
+          logger.info("No package #{name.split(/ /)[0]} for #{self.depends} in #{self.inspect}")
+        end
         res
       end
     end
