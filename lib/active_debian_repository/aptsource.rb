@@ -43,6 +43,19 @@ module ActiveDebianRepository
         "#{((arch.eql? "source") ? "deb-src" : "deb")} #{self.uri} #{self.distribution} #{self.component}"
       end
 
+      #
+      # * *Args*    :
+      # * *Returns* :
+      #   - 
+      # * *Raises* :
+      #
+      def get_packages_file_from_net
+        packages_file = "/tmp/Packages_#{Random.new_seed}"
+        `wget -q "#{self.safe_url('bz2')}" -O - | #{BUNZIP2} > #{packages_file}`
+        `wget -q "#{self.safe_url('gz')}" -O - | #{GUNZIP} > #{packages_file}` unless $?.success?
+        packages_file
+      end
+
       # It suppose that the package file is ordered
       # (Downloaded from debian repos).
       #
@@ -51,34 +64,26 @@ module ActiveDebianRepository
       #   - 
       # * *Raises* :
       #
-      def update_db(packages_file)
+      def update_db(packages_file = nil)
         # Hash of name => version
         old_packages = self.packages.select([:name, :version]).inject({}){|res, p| res[p.name] = p.version; res}
-
+        
+        packages_file ||= get_packages_file_from_net
         ActiveDebianRepository::Parser.new(packages_file).each do |p|
           if old_package_version = old_packages.delete(p['package']) # already there
             if old_package_version != p['version'] # different version... we need to update it
               self.packages.where(:name => p['package']).first.update_attributes(ActiveDebianRepository::Parser.db_attributes(p)) or raise p.inspect
             end
           else # we need to add it
-            self.packages.create!(ActiveDebianRepository::Parser.db_attributes(p))
+            res = self.packages.create(ActiveDebianRepository::Parser.db_attributes(p))
+            if ! res.valid? 
+              logger.info("Error in saving #{res.inspect} #{res.errors.inspect}")
+              break
+            end
           end
         end
         self.packages.where(:name => old_packages.keys).delete_all unless old_packages.keys.empty?
-      end
-
-      #
-      # * *Args*    :
-      # * *Returns* :
-      #   - 
-      # * *Raises* :
-      #
-      def update_db_from_net(background = nil)
-        packages_file = "/tmp/Packages_#{Random.new_seed}"
-        `wget -q "#{self.safe_url('bz2')}" -O - | #{BUNZIP2} > #{packages_file}`
-        `wget -q "#{self.safe_url('gz')}" -O - | #{GUNZIP} > #{packages_file}` unless $?.success?
-        background ? update_db_in_background(packages_file) : update_db(packages_file)
-        # TODO FIXME
+        # FIXME
         # File.unlink(packages_file)
       end
 
@@ -88,7 +93,7 @@ module ActiveDebianRepository
       #   - 
       # * *Raises* :
       #
-      def update_db_in_background(packages_file)
+      def update_db_in_background(packages_file = nil)
         # FIXME
         if update_db_running?
           logger.info("AptSource already updating for #{self.inspect}: #{@spawn.inspect}")
