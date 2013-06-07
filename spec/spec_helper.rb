@@ -41,7 +41,7 @@ class Script < ActiveRecord::Base
   include Paperclip::Glue
   belongs_to :package
 
-  validates_format_of :stype, :with => /^(preinst|postinst|prerm|postrm)$/, :message => :script_type_unknown
+  validates_format_of :stype, :with => /\A(preinst|postinst|prerm|postrm)\z/, :message => :script_type_unknown
 
   has_attached_file :attach,
                     :path => "#{File.dirname(__FILE__)}:url"

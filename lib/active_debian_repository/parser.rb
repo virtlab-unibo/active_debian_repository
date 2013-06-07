@@ -4,7 +4,7 @@ class Parser
   def initialize(filename)
     @filename = filename
     @file = File.open(@filename)
-    @line_regexp = Regexp.new('^(\S+): (.*)')
+    @line_regexp = Regexp.new('\A(\S+): (.*)')
   end
 
   #
@@ -23,7 +23,7 @@ class Parser
         if m = @line_regexp.match(line)
           res[m[1].downcase] = m[2]
         else 
-          res["body"] += line.gsub(/^\./, '').gsub(/^ /, '')
+          res["body"] += line.gsub(/\A\./, '').gsub(/\A /, '')
         end
       end
     end
