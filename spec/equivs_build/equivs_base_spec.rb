@@ -3,13 +3,11 @@ require 'tmpdir'
 
 describe "Equivs" do
 
-  REPO = "/tmp"
-
   # delete previous package and create new
   before(:all) do
     @package = FactoryGirl.build(:package)
-    @equivs = ActiveDebianRepository::Equivs.new(@package, REPO)
-    @expected_file_name = File.join(REPO, @equivs.package_filename)
+    @equivs = ActiveDebianRepository::Equivs.new(@package, REPO_DIR)
+    @expected_file_name = File.join(REPO_DIR, @equivs.package_filename)
     File.delete(@expected_file_name) if File.exists? @expected_file_name
     @equivs.create.should be_true
   end

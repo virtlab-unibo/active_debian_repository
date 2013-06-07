@@ -3,11 +3,9 @@ require 'tmpdir'
 
 describe "Build packages with changelogs" do
 
-  REPO = "/tmp"
-
   before(:all) do
     @package = FactoryGirl.create(:package)
-    @equivs = ActiveDebianRepository::Equivs.new(@package, REPO)
+    @equivs = ActiveDebianRepository::Equivs.new(@package, REPO_DIR)
     
     # add a changelog to the package
     chlog = @package.changelogs.new
@@ -20,7 +18,7 @@ describe "Build packages with changelogs" do
     @package.version = chlog.version
 
     # delete the package if already exists 
-    @expected_file_name = File.join(REPO, @equivs.package_filename)
+    @expected_file_name = File.join(REPO_DIR, @equivs.package_filename)
     File.delete(@expected_file_name) if File.exists? @expected_file_name
   end
 
@@ -52,7 +50,7 @@ describe "Build packages with changelogs" do
     @package.version = chlog.version
 
     # delete the package if already exists 
-    @expected_file_name = File.join(REPO, @equivs.package_filename)
+    @expected_file_name = File.join(REPO_DIR, @equivs.package_filename)
     File.delete(@expected_file_name) if File.exists? @expected_file_name
 
     @equivs.create.should be_true

@@ -3,8 +3,6 @@ require 'tmpdir'
 
 describe "Build packages with scripts" do
 
-  REPO = "/tmp"
-
   # delete previous package and create new
   before(:all) do
     @package = FactoryGirl.create(:package)
@@ -13,8 +11,8 @@ describe "Build packages with scripts" do
      exit 0]
     @preinst_file = "/tmp/preprova"
     @postinst_file = "/tmp/postprova"
-    @equivs = ActiveDebianRepository::Equivs.new(@package, REPO)
-    @expected_file_name = File.join(REPO, @equivs.package_filename)
+    @equivs = ActiveDebianRepository::Equivs.new(@package, REPO_DIR)
+    @expected_file_name = File.join(REPO_DIR, @equivs.package_filename)
   end
 
   before(:each) do
@@ -36,7 +34,7 @@ describe "Build packages with scripts" do
   it "should create a deb with a preinst script " do
     File.open(@preinst_file, "w") { |f| f.write(@script) }
     @package.add_script(:preinst, @preinst_file)
-    ActiveDebianRepository::Equivs.new(@package, REPO).create.should be_true
+    ActiveDebianRepository::Equivs.new(@package, REPO_DIR).create.should be_true
     Dir.mktmpdir do |tmp_dir|
       res = `dpkg -e #{@expected_file_name} #{tmp_dir}`
       $?.success?.should be_true
@@ -50,7 +48,7 @@ describe "Build packages with scripts" do
     File.open(@postinst_file, "w") { |f| f.write(@script) }
     @package.add_script(:preinst, @preinst_file)
     @package.add_script(:postinst, @postinst_file)
-    ActiveDebianRepository::Equivs.new(@package, REPO).create.should be_true
+    ActiveDebianRepository::Equivs.new(@package, REPO_DIR).create.should be_true
     Dir.mktmpdir do |tmp_dir|
       res = `dpkg -e #{@expected_file_name} #{tmp_dir}`
       $?.success?.should be_true
