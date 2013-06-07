@@ -39,13 +39,17 @@ ActiveRecord::Schema.define do
     t.datetime "attach_updated_at"
   end
 
-  create_table :changelogs, :force => true do |t| 
+  create_table "changelogs", :force => true do |t|
     t.integer "package_id",  :null => false
-    t.string  "version",  :null => false
-    t.text    "description",  :null => false
+    t.integer "user_id",     :null => false
+    t.string  "version"
+    t.text    "description"
     t.string  "date",  :null => false
     t.string  "urgency",  :null => false
     t.string  "distributions",  :null => false
-  end 
+  end
+
+  add_index "changelogs", ["package_id"], :name => "index_package_id_on_changelogs"
+  add_index "changelogs", ["user_id"], :name => "index_user_id_on_changelogs"
 
 end
