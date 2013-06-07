@@ -41,7 +41,6 @@ ActiveRecord::Schema.define do
 
   create_table "changelogs", :force => true do |t|
     t.integer "package_id",  :null => false
-    t.integer "user_id",     :null => false
     t.string  "version"
     t.text    "description"
     t.string  "date",  :null => false
@@ -50,6 +49,4 @@ ActiveRecord::Schema.define do
   end
 
   add_index "changelogs", ["package_id"], :name => "index_package_id_on_changelogs"
-  add_index "changelogs", ["user_id"], :name => "index_user_id_on_changelogs"
-
 end
