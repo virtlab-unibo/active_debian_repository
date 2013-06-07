@@ -11,7 +11,7 @@ describe "Aptsource" do
   
   it "should update database downloading from network" do
     @a.update_db
-    @a.packages.where(:name => 'xulrunner-dev').all.should_not be_empty
+    @a.packages.where(:name => 'xulrunner-dev').to_a.should_not be_empty
   end
 
 end

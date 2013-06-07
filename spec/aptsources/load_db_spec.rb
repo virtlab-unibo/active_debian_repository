@@ -23,7 +23,7 @@ describe "Aptsource" do
     a.update_db(@test_file)
     puts "-----------------------------------------------------"
     a.update_db(@test_file_different)
-    a.packages.where(:name => '389-console').all.should be_empty
+    a.packages.where(:name => '389-console').to_a.should be_empty
     a.packages.where(:name => '0ad').first.version.should == '0~r11853-2'
   end
 
