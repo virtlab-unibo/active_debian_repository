@@ -61,14 +61,18 @@ module ActiveDebianRepository
 
       # Return the default value if the method name is a 
       # known changelog property. Raise otherwise.
-      # TODO: do we have to handle nil cases?
       def method_missing (method_name, *args, &block)
-        if not default_values.has_key? method_name
-          super
-        end
-        default_values[method_name]
+        begin
+          super #let activeBase to work as it wish.
+        rescue NoMethodError # if nothing handled it
+          if default_attributes.has_key? method_name # check if we have a default value
+            return self.default_attributes[method_name]
+          else
+            raise NoMethodError # nothing can be done, we give up
+          end 
+        end 
       end
-      
+
     end
   end
 end

@@ -1,13 +1,13 @@
 ActiveRecord::Schema.define do
 
-  create_table "aptsources", :force => true do |t|
+  create_table :aptsources, :force => true do |t|
     t.string  "uri",          :limit => 250
     t.string  "distribution", :limit => 50
     t.string  "component",    :limit => 50
     t.string  "arch",         :limit => 20
   end
 
-  create_table "packages", :force => true do |t|
+  create_table :packages, :force => true do |t|
     t.integer "aptsource_id"
     t.string  "name",        :null => false
     t.string  "short_description"
@@ -39,7 +39,7 @@ ActiveRecord::Schema.define do
     t.datetime "attach_updated_at"
   end
 
-  create_table "changelogs", :force => true do |t|
+  create_table :changelogs, :force => true do |t|
     t.integer "package_id",  :null => false
     t.string  "version"
     t.text    "description"

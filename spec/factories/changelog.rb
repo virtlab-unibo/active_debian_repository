@@ -1,5 +1,4 @@
 FactoryGirl.define do
-  # remember it depends on source with source_id
   factory :changelog do
     distributions "precise"
     description       "I'am a change description\n    * bla bla"
