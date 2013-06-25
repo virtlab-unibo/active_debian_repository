@@ -1,52 +1,74 @@
 require 'tmpdir'
+require 'tempfile'
 
 module ActiveDebianRepository
 module Package
-  
-  # options: 
-  #   :homepage_proc => lambda {|p| "http://www.example.it/packages/#{p.name}"},
-  #   :install_dir base di destinazione del file dopo dpkg -i
-  #   :repo_dir    dove si salva il file deb per il server web
-  def act_as_debian_package(options={})
 
-    # Declare a class-level attribute whose value is inheritable by subclasses. 
+  def acts_as_debian_package(options={})
+
+    # Declare a class-level attribute whose value is inheritable by subclasses.
     # Subclasses can change their own value and it will not impact parent class.
-    class_attribute :package_options
+    class_attribute :default_attributes
 
-    # name must consist only of lower case letters (a-z), digits (0-9), plus (+) and minus (-) signs, and periods (.). 
+    # name must consist only of lower case letters (a-z), digits (0-9), plus (+) and minus (-) signs, and periods (.).
     # They must be at least two characters long and must start with an alphanumeric character.
-    validates_format_of :name, :with => /^[a-z0-9][a-z0-9+.-]+$/, :message => :package_name_format
+    validates_format_of :name, :with => /\A[a-z0-9][a-z0-9+.-]+\z/, :message => :package_name_format
 
-    self.package_options = {
-      :section        => 'debutils',
-      :homepage_proc  => lambda {|p| "http://localhost/debutils/#{p.name}"},
-      :install_dir    => '/usr/share/debutils', # base di destinazione del file dopo dpkg -i
-      :repo_dir       => '/var/www/public',
+    self.default_attributes = {
+      :name           => 'dummy',
+      :section        => 'Misc',
       :maintainer     => 'Maintainer',
       :email          => 'debutils@example.com',
-      :core_dep       => 'vlab-core',        # dipendenza comune a tutti
-      :tmp_dir        => '/var/www/tmp',
-      :hide_depcore   => true                # nascondi dipendenza
+      :homepage       => 'http://www.virtlab.unibo.it',
+      :architecture   => 'all',
+      :priority       => 'optional',
+      :standards_version => '3.9.2',
+      :depends        => "",
+      :pre_depends    => "",
+      :suggests       => "",
+      :reccomends     => "",
+      :provides       => "",
+      :replaces       => "",
+      :version        => "0.1-1",
+      :copyright      => "", # default is GPLv2
+      :readme         => "", # default to a generic readme
+      :short_description => "Package created by the Active_Debian_Repo gem.",
+      :long_description => ""
     }.merge(options)
 
     include InstanceMethods
-    logger.info "Initialized as act_as_debian_package"
+    logger.info "Initialized as acts_as_debian_package"
   end
-
   module InstanceMethods
+
     def to_s
       self.name
     end
-    
-    # package.has_depend?('vlan')
-    def has_depend?(package_name)
+
+    # package.depends_on?('vlan')
+    #
+    # * *Args*    :
+    #   - +package_name+ -> string.
+    # * *Returns* :
+    #   -
+    # * *Raises* :
+    #
+    def depends_on?(package_name)
       self.depends.split(', ').map{|n| n.split[0]}.include?(package_name) if self.depends
     end
 
-    # package.add_files('vlan') or with version package.add_files('vlan', "23.4")
-    def add_depend(package_name, versions = nil)
-      if self.has_depend?(package_name)
-        self.errors.add(:base, "Pacchetto gia` incluso")
+    # package.add_dependency('vlan') or with version package.add_dependency('vlan', "23.4")
+    #
+    # * *Args*    :
+    #   - +package_name+ -> string.
+    #   - +versions+ -> dependency versions in debian format.
+    # * *Returns* :
+    #   -
+    # * *Raises* :
+    #
+    def add_dependency(package_name, versions = nil)
+      if self.depends_on?(package_name)
+        self.errors.add(:base, "Dependency already present")
         return false
       end
       if self.class.where(:name => package_name).count > 0
@@ -54,73 +76,116 @@ module Package
         self.depends += package_name
         self.depends += " (#{versions})" if versions
       else
-        self.errors.add(:base, "Pacchetto #{package_name} sconosciuto")
+        self.errors.add(:base, "Unknown package #{package_name}")
         return false
       end
       self.save
     end
 
-    def remove_depend(package_name)
+    # package.add_dependency('vlan') or with version package.add_dependency('vlan', "23.4")
+    #
+    # * *Args*    :
+    #   - +Dependency name+ -> The dependency name you want to be removed
+    # * *Returns* :
+    #   -
+    # * *Raises* :
+    #
+    def remove_dependency(package_name)
       self.depends = self.depends.split(', ').delete_if{|a| a.split[0] == package_name}.join(', ')
       self.save
     end
 
-    # return array of packages it depends on
+    # FIXME: maybe we should rename it: dependencies
+    #
+    # * *Args*    :
+    # * *Returns* :
+    #   - Return an array of package names it depends on
+    # * *Raises* :
+    #
     def depends_on
       self.depends.split(', ').inject([]) do |res, name|
-        res << self.class.where(:name => name.split(/ /)[0]).first unless (package_options[:hide_depcore] and name == package_options[:core_dep])  
+        if p = self.class.where(:name => name.split(/ /)[0]).first
+          res << p
+        else
+          logger.info("No package #{name.split(/ /)[0]} for #{self.depends} in #{self.inspect}")
+        end
         res
       end
     end
 
-    def add_files(files)
-      @files = files
+    # Return the default value if the method name is a 
+    # known package property. Raise otherwise.
+    #
+    # * *Args*    :
+    # * *Returns* :
+    #   - Return the property value if defined.
+    # * *Raises* :
+    #   - NoMethodError 
+    #
+    def method_missing (method_name, *args, &block)
+      begin
+        super #let activeBase to work as it wish.
+      rescue NoMethodError # if nothing handled it
+        if default_attributes.has_key? method_name # check if we have a default value
+          return self.default_attributes[method_name]
+        else
+          raise NoMethodError # nothing can be done, we give up
+        end 
+      end 
+    end 
+
+    # 
+    # * *Args*    :
+    # - type: the symbol representing the type of the script
+    # * *Returns* :
+    #   - Return the path of the script identimied by the type
+    #   - nil if no such a script exist.
+    # * *Raises* :
+    #
+    def get_script type
+      result = nil
+      self.scripts.each do |script|
+        if script.stype.to_sym == type.to_sym
+          result = script.attach.path
+        end
+      end
+      result
     end
 
-    # generates the homepage from option homepage_proc
-    def generate_homepage 
-      self.homepage = package_options[:homepage_proc].call(self)
-    end
+    # * *Args*    :
+    #   - +package_name+ -> string.
+    # * *Returns* :
+    #   -
+    # * *Raises* :
+    #
+    def add_script (type, script)
+      new_script = self.scripts.new
+      new_script.stype = type.to_s
 
-    def maintainer
-       "#{package_options[:maintainer]} <#{package_options[:email]}>"
-    end
+      if script.is_a? File
+        logger.debug ("Adding a script, the object is a File")
+        new_script.name = File.basename(script.path)
+        new_script.attach = script
 
-    def section
-      package_options[:section]
-    end
+      elsif File.exist? script # it's path
+        logger.debug ("Adding a script, the object is a path")
+        new_script.name = File.basename(script)
+        new_script.attach = File.new(script, 'r')
 
-    def repo_dir
-      package_options[:repo_dir]
-    end
+      elsif script.is_a? String # it's a script body
+        logger.debug ("Adding a script, the object is a script content")
+        tfile = Tempfile.new(type.to_s)
+        File.open(tfile, 'w') { |f| f.print script }
+        new_script.name = type.to_s
+        new_script.attach = tfile
 
-    def install_dir
-      package_options[:install_dir]
-    end
+      else
+        raise "Script is not a file, a path or a string"
+      end
 
-    def deb_file_name
-      "#{self.name}_#{self.version}_all.deb"
-    end
-
-    # Return deb file name or raise in case of errors
-    def create_deb!(repo_dir = nil)
-      create_deb(repo_dir) || raise("create_deb! in debutils::package.rb has raised an exception")
-    end
-
-    # Return deb file name or false in case of errors
-    def create_deb(repo_dir = nil)
-      DebPckFile.new(self, repo_dir).create
-    end
-
-    def scripts
-      @scripts ||= {}
-    end
-
-    def add_script (type, content)
-      self.scripts[type] = content
+      new_script.save
     end
 
   end
 end
 end
-

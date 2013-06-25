@@ -1,11 +1,12 @@
 FactoryGirl.define do
   # remember it depends on source with source_id
   factory :package do
-    name        'test-name'
-    description "Breve descrizione"
-    body        "Una lunga description\n  \nsu tre righe\n\nho detto tre"
-    depends     ""
-    version     "1.2.3"
+    name              'test-name'
+    short_description "I'm a short description"
+    long_description  "I'm a\n  \ndescription\n\non three lines"
+    homepage          "http://example.it/cpkg/test"
+    depends           ""
+    version           "1.2.3"
     aptsource
   end
 end

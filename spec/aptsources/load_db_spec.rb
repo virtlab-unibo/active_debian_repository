@@ -23,18 +23,8 @@ describe "Aptsource" do
     a.update_db(@test_file)
     puts "-----------------------------------------------------"
     a.update_db(@test_file_different)
-    a.packages.where(:name => '389-console').all.should be_empty
+    a.packages.where(:name => '389-console').to_a.should be_empty
     a.packages.where(:name => '0ad').first.version.should == '0~r11853-2'
-  end
-
-  it "should update database downloading from network" do
-    a = FactoryGirl.create(:aptsource, {uri: 'http://mozilla.debian.net',
-                                      distribution: 'squeeze-backports', 
-                                      component: 'iceweasel-release', 
-                                      arch: 'binary-i386'})
-    a.update_db_from_net
-    a.packages.where(:name => 'xulrunner-dev').all.should_not be_empty
-    p a.packages.map(&:name)
   end
 
 end

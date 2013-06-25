@@ -1,7 +1,10 @@
 # ActiveDebianRepository
 
 ActiveDebianRepository Gem is used in [Cpkg-on-rails](https://github.com/virtlab-unibo/cpkg-on-rails)
-to handle Debian repositories.
+to handle Debian repositories. Its main purpose is to create debian metapackages
+(packages with documents and dependencies but not installable software) and
+place it in the right folder under a debian repository.
+
 
 ## Installation
 
@@ -12,6 +15,12 @@ Add this line to your application's Gemfile:
 And then execute:
 
     $ bundle
+
+## Migration
+
+    rails generate active_debian_repository:migration
+    rake db:migrate
+
 
 ## Components
 
@@ -25,7 +34,7 @@ It handles the debian source (Repository, as in
 ```ruby
 class AptSource < ActiveRecord::Base
   has_many :packages
-  act_as_apt_source
+  acts_as_apt_source
 end
 ```
 
@@ -59,24 +68,18 @@ is taken from
 
 
 
-:FIMXE copy db/migration from the gem 
-
 ### ActiveDebianRepository::Package
 
 in your project you use this component adding
-`act_as_debian_package` in your model (< ActiveRecord::Base).
+`acts_as_debian_package` in your model (< ActiveRecord::Base).
 
 ```ruby
 class Package < ActiveRecord::Base
   belongs_to :archive
-  act_as_debian_package :section      => 'vlab',
-                        :homepage_proc => lambda {|p| "https://www.virtlab.unibo.it/cpkg/courses/#{p.course.id}"},
+  acts_as_debian_package :section      => 'vlab',
+                        :homepage => "https://www.virtlab.unibo.it/cpkg/",
                         :maintainer   => "Unibo Virtlab",
                         :email        => "support@virtlab.unibo.it",
-                        :install_dir  => '/usr/share/unibo',
-                        :repo_dir     => '/var/www/repo/dists/packages',
-                        :core_dep     => 'vlab-core',
-                        :hide_depcore => true
 end
 ```
 
@@ -92,28 +95,34 @@ end
 Takes a file name with the archive index and provides iteration (with each)
 for every package in the filename
  
-### ActiveDebianRepository::DebPckFile
+### ActiveDebianRepository::Equivs
 
 Given a `ActiveDebianRepository::Package` it provides a methods to create the debian
 `.deb` file (internally it uses `EQUIVS_BUILD_COMMAND = "/usr/bin/equivs-build"`).
 
 ```ruby
 package = ActiveDebianRepository::Package.first
-ActiveDebianRepository::DebPckFile.new(package).create
+equivs = ActiveDebianRepository::Equivs.new(package, dest_dir)
+equivs.create
 ```
 
-The file is created in `package.repo_dir` dir and 
-is named `package.deb_file_name`.
+The file is created in `dest_dir` dir and 
+is named `equivs.package_filename`.
 
 For example, given
 
 ```ruby
+dest_dir = '/var/www/repo/dists/packages'
 package = ActiveDebianRepository::Package.new(:name => 'test123', 
-                                :version => '12.8', 
-                                :repo_dir => '/var/www/repo/dists/packages')
+                                :version => '12.8') 
+                                
 ```
 
 the file is created as `/var/www/repo/dists/packages/test123_12.8.deb`
+
+### Examples
+
+You can find examples on how to use this gem in the *spec/spec_helper.rb* file.
 
 ## Contributing
 
