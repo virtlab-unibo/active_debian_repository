@@ -33,7 +33,8 @@ module Package
       :copyright      => "", # default is GPLv2
       :readme         => "", # default to a generic readme
       :short_description => "Package created by the Active_Debian_Repo gem.",
-      :long_description => ""
+      :long_description => "",
+      :gpg_key              => "09A0DEDE"
     }.merge(options)
 
     include InstanceMethods

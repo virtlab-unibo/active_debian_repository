@@ -275,7 +275,7 @@ module ActiveDebianRepository
       FileUtils.cp_r("debian", tmp_dir)
       Dir.chdir(tmp_dir) do
         #FIXME: move key id
-        res = run_dpkg tmp_dir, "09A0DEDE"
+        res = run_dpkg tmp_dir, @package.gpg_key 
         if res
           # mv can raise
           FileUtils.mv(File.join("..", self.package_filename), @dest_dir, :force => true)
