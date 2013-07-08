@@ -1,0 +1,11 @@
+@packagename@ for your Debian based distro.
+
+
+This is package created by Active_debian_repository. 
+Active_Debian_Repository is ruby on rails gem. 
+More info at https://github.com/virtlab-unibo/active_debian_repository
+
+This package depends on
+
+@depends@
+

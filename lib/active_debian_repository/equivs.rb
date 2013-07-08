@@ -3,9 +3,6 @@ require 'tmpdir'
 module ActiveDebianRepository
   class Equivs
 
-    EQUIVS_BUILD_COMMAND = "/usr/bin/equivs-build"
-
-
     # deb = Equivs.new(package, dest_dir)
     # example Equivs.new(package, '/var/www/debian/virtlab')
     #
@@ -34,7 +31,7 @@ module ActiveDebianRepository
       begin
         Dir.mktmpdir do |tmp_dir|
           copy_files(tmp_dir)
-          equivs_build!(tmp_dir)
+          package_build!(tmp_dir)
         end
       rescue => err
         ActiveRecord::Base.logger.info("ERROR in Equivs.create: #{err}")
@@ -64,9 +61,8 @@ module ActiveDebianRepository
     def files
       files_equivs = ""
       @package.documents.each do |file|
-        # path/appunti.txt /usr/share/unibo/course_name/appunti.txt 
-        # this works on WHEEZY or higher 
-        files_equivs += "#{file.attach_file_name} #{File.join(file.install_path, "")}\n\t"
+        ActiveRecord::Base.logger.info("#{file.attach_file_name} #{file.install_path}")
+        files_equivs += "#{file.attach_file_name} #{file.install_path}\n\t"
       end
       files_equivs
     end
@@ -78,15 +74,20 @@ module ActiveDebianRepository
     # * *Raises* :
     #
     def changelog_file
+      tfile = Tempfile.new('changelogs') 
       if @package.changelogs.size > 0
-        tfile = Tempfile.new('changelogs') 
         File.open(tfile, 'a') do |f| 
           @package.changelogs.reverse_each { |chlog| f.puts chlog }
         end
-        tfile.path
       else
-        nil
+        ActiveRecord::Base.logger.debug "Creating a fake changelog."
+        fake_chlog = @package.changelogs.new 
+        @package.changelogs = []
+        fake_chlog.package = @package
+        fake_chlog.version = @package.version
+        File.open(tfile, 'a') { |f| f.puts fake_chlog.to_s  }
       end
+      tfile.path
     end
 
     # 
@@ -129,6 +130,7 @@ module ActiveDebianRepository
     #
     def copy_files(dest_dir)
       @package.documents.each do |file|
+        ActiveRecord::Base.logger.debug "copying file #{file.attach.path} in #{File.join(dest_dir, "")}"
         FileUtils.cp(file.attach.path, File.join(dest_dir, ""))
       end
     end
@@ -177,7 +179,7 @@ module ActiveDebianRepository
         :replaces          => @package.replaces,
         :architecture      => @package.architecture,
         :copyright         => self.copyright_file,
-        :changelog         => self.changelog_file,
+       # :changelog         => self.changelog_file,
         :readme            => self.readme_file,
         :postinst          => self.postinst,
         :preinst           => self.preinst,
@@ -268,26 +270,89 @@ module ActiveDebianRepository
     # * *Returns* :
     #   -
     # * *Raises* :
-    def equivs_build!(tmp_dir)
-      # create equivs_control file
-      File.open(control_file(tmp_dir), 'w') do |f|
-        f.puts self.to_s # control_string 
-        ActiveRecord::Base.logger.debug self.to_s #control_string 
-      end
-
-      # run equivs-build
+    def package_build!(tmp_dir)
+      # copying template files
+      FileUtils.cp_r("debian", tmp_dir)
       Dir.chdir(tmp_dir) do
-        File.exists?(EQUIVS_BUILD_COMMAND) or raise "executable equivs-build missing"
-        res = `#{EQUIVS_BUILD_COMMAND} #{self.control_file(tmp_dir)} 2>&1`
-        ActiveRecord::Base.logger.debug "#{EQUIVS_BUILD_COMMAND} returns #{res}"
-        if $?.success?
+        #FIXME: move key id
+        res = run_dpkg tmp_dir, "09A0DEDE"
+        if res
           # mv can raise
-          FileUtils.mv(self.package_filename, @dest_dir, :force => true)
+          FileUtils.mv(File.join("..", self.package_filename), @dest_dir, :force => true)
         else
-          ActiveRecord::Base.logger.debug "Equivs-build failed"
-          raise "Equivs-build failed"
+          ActiveRecord::Base.logger.debug "Dpkg-buildpackage failed"
+          raise "dpkg-buildpackage failed"
         end
       end
+    end
+
+
+    # runs dpkg-buildpackage 
+    #
+    # * *Args*    :
+    #   - +k_id+ -> GPG Key id to sign .changes and .dsc 
+    # * *Returns* :
+    #   -
+    def run_dpkg tmp_dir, k_id
+      self.populate_package tmp_dir
+      stdout = `dpkg-buildpackage -rfakeroot -k#{k_id} 2>&1`
+      ActiveRecord::Base.logger.debug stdout 
+      if $?.success?
+        true
+      else
+        false
+      end 
+    end
+
+    def populate_package package_dir
+      options = {
+        :copyright         => self.copyright_file,
+        :changelog         => self.changelog_file,
+        :readme            => self.readme_file,
+        :postinst          => self.postinst,
+        :preinst           => self.preinst,
+        :postrm            => self.postrm,
+        :prerm             => self.prerm
+      }
+      options.each do |k, v|
+        ActiveRecord::Base.logger.debug "copying #{v} in #{File.join(package_dir, "debian/#{k}")}" 
+        FileUtils.cp(v, File.join(package_dir, "debian/#{k}")) unless (v == nil or v == "")
+      end
+      if self.files != ""
+        ActiveRecord::Base.logger.debug "Writing files in debian/install" 
+        File.open(File.join(package_dir, "debian/install"), 'w') { |file| file.write(self.files.strip) }
+      end
+      ActiveRecord::Base.logger.debug "Writing control file" 
+      File.open(File.join(package_dir, "debian/control"), 'w+') { |file| file.write(self.control) }
+    end
+
+    def control
+      
+      options = {
+        :source            => @package.name, # probably we'll never implement it
+        :section           => @package.section,
+        :priority          => @package.priority,
+        :build_depends     => "debhelper (>= 7)",
+        :maintainer        => self.maintainer,
+        :homepage          => @package.homepage,
+        :standards_version => @package.standards_version + "\n", 
+        :package           => @package.name,
+        :architecture      => @package.architecture,
+        :pre_depends       => @package.pre_depends,
+        :depends           => @package.depends,
+        :reccomends        => @package.reccomends,
+        :suggests          => @package.suggests,
+        :provides          => @package.provides,
+        :replaces          => @package.replaces,
+        :description       => self.description 
+      }
+      res = ""
+      options.each do |k, v|
+        if v != nil and v != "" #TODO: think if this test needs to be improved 
+          res << k.to_s.split('_').map(&:capitalize).join('-') << ": " << v << "\n"
+        end
+      end
+      res
     end
 
   end
