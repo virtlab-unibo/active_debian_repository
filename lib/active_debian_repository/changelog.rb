@@ -42,11 +42,16 @@ module ActiveDebianRepository
       #     distribution(s) lists the distributions where this version should be
       #     FIXME: every line of the changes section has to be indented by 2 spaces at least.
       def to_s
-        %Q[#{package.name} (#{self.version}) #{self.distributions}; urgency=#{self.urgency}
+        urgency_v = self.urgency ? self.urgency : default_values[:urgency]
+        distrib_v = self.distributions ?  self.distributions : default_values[:distributions] 
+        version_v = self.version ? self.version : default_values[:version] 
+        date_v = self.date ? self.date  : Changelog.date_line 
+        (self.description = default_values[:description]) unless self.description
+        %Q[#{package.name} (#{version_v}) #{distrib_v}; urgency=#{urgency_v}
 
 #{self.change_lines}
 
- -- #{package.maintainer} <#{package.email}>  #{self.date}]
+ -- #{package.maintainer} <#{package.email}>  #{date_v}]
       end 
 
       #
@@ -65,8 +70,8 @@ module ActiveDebianRepository
         begin
           super #let activeBase to work as it wish.
         rescue NoMethodError # if nothing handled it
-          if default_attributes.has_key? method_name # check if we have a default value
-            return self.default_attributes[method_name]
+          if default_values.has_key? method_name # check if we have a default value
+            return self.default_values[method_name]
           else
             raise NoMethodError # nothing can be done, we give up
           end 
