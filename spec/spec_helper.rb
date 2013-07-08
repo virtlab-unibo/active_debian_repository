@@ -4,9 +4,14 @@ require 'active_debian_repository'
 require 'factory_girl'
 require 'paperclip'
 
-REPO_DIR = "/tmp"
+REPO_DIR = "/tmp/repo"
 
 ActiveRecord::Base.logger = Logger.new(File.dirname(__FILE__) + "/rspec.log")
+begin
+  Dir.mkdir(REPO_DIR)
+rescue
+ActiveRecord::Base.logger.debug "REPO_DIR already exist"
+end
 ActiveRecord::Base.establish_connection(YAML::load(IO.read(File.dirname(__FILE__) + "/database.yml"))['sqlite3'])
 load(File.dirname(__FILE__) + "/schema.rb") 
 
