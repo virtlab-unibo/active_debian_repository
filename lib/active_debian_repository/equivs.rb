@@ -272,7 +272,7 @@ module ActiveDebianRepository
     # * *Raises* :
     def package_build!(tmp_dir)
       # copying template files
-      FileUtils.cp_r("debian", tmp_dir)
+      FileUtils.cp_r(File.expand_path(File.join(File.dirname(__FILE__), "debian")), tmp_dir)
       Dir.chdir(tmp_dir) do
         ppath = File.join("..", self.package_filename)
         File.delete(ppath) if File.exists? ppath
