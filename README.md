@@ -10,7 +10,6 @@ place it in the right folder under a debian repository.
 * ruby 2.0.0p195
 * dpkg installed on the system
 * debhelper installed on the system
-* equivs installed on the system
 
 ## Installation
 
@@ -104,7 +103,7 @@ for every package in the filename
 ### ActiveDebianRepository::Equivs
 
 Given a `ActiveDebianRepository::Package` it provides a methods to create the debian
-`.deb` file (internally it uses `EQUIVS_BUILD_COMMAND = "/usr/bin/equivs-build"`).
+`.deb` file (internally it uses dpkg-buildpackage.
 
 ```ruby
 package = ActiveDebianRepository::Package.first
