@@ -274,11 +274,12 @@ module ActiveDebianRepository
       # copying template files
       FileUtils.cp_r("debian", tmp_dir)
       Dir.chdir(tmp_dir) do
-        #FIXME: move key id
+        ppath = File.join("..", self.package_filename)
+        File.delete(ppath) if File.exists? ppath
         res = run_dpkg tmp_dir, @package.gpg_key 
-        if res
+        if res or File.exists? ppath 
           # mv can raise
-          FileUtils.mv(File.join("..", self.package_filename), @dest_dir, :force => true)
+          FileUtils.mv(ppath , @dest_dir, :force => true)
         else
           ActiveRecord::Base.logger.debug "Dpkg-buildpackage failed"
           raise "dpkg-buildpackage failed"
@@ -292,10 +293,16 @@ module ActiveDebianRepository
     # * *Args*    :
     #   - +k_id+ -> GPG Key id to sign .changes and .dsc 
     # * *Returns* :
+    # True if dpkg-buildpackage returns 0
+    # False otherwise.
+    # dpkg-buildpackage returns a value different
+    # from 0 even if it can't signed the package.
+    # In that case the package is successfully created.
     #   -
     def run_dpkg tmp_dir, k_id
       self.populate_package tmp_dir
-      stdout = `dpkg-buildpackage -rfakeroot -k#{k_id} 2>&1`
+      (key = "-k#{k_id}") unless k_id == ""
+      stdout = `dpkg-buildpackage -rfakeroot #{key} 2>&1`
       ActiveRecord::Base.logger.debug stdout 
       if $?.success?
         true

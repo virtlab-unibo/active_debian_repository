@@ -34,7 +34,7 @@ module Package
       :readme         => "", # default to a generic readme
       :short_description => "Package created by the Active_Debian_Repo gem.",
       :long_description => "",
-      :gpg_key              => "09A0DEDE"
+      :gpg_key        => ""
     }.merge(options)
 
     include InstanceMethods
