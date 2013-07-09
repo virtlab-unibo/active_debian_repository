@@ -27,6 +27,8 @@ class Package < ActiveRecord::Base
   has_many   :changelogs
 
   acts_as_debian_package :maintainer  => "Unibo Virtlab",
+                         #insert your key id if you want to sign packages
+                         # :gpg_key     => "09A0DEDE",
                          :email       => "info@virtlab.unibo.it"
 end
 
