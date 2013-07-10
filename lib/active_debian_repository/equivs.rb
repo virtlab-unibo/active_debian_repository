@@ -263,10 +263,12 @@ module ActiveDebianRepository
       File.join(tmp_dir, "#{@package.name}-control")
     end
 
-    # runs equivs build
+    # build the package 
+    # After the build the .deb, .changes, .dsc
+    # and .tar.gz are moved to @dest_dir
     #
     # * *Args*    :
-    #   - +tmp_dir+ -> where to put the package during the build. 
+    #   - +tmp_dir+ -> where to put the package files during the build. 
     # * *Returns* :
     #   -
     # * *Raises* :
@@ -276,10 +278,11 @@ module ActiveDebianRepository
       Dir.chdir(tmp_dir) do
         ppath = File.join("..", self.package_filename)
         File.delete(ppath) if File.exists? ppath
+        deb_files = File.join("..", "#{@package.name}_#{@package.version}*")
         res = run_dpkg tmp_dir, @package.gpg_key 
         if res or File.exists? ppath 
           # mv can raise
-          FileUtils.mv(ppath , @dest_dir, :force => true)
+          FileUtils.mv(Dir.glob(deb_files) , @dest_dir, :force => true)
         else
           ActiveRecord::Base.logger.debug "Dpkg-buildpackage failed"
           raise "dpkg-buildpackage failed"
@@ -315,7 +318,7 @@ module ActiveDebianRepository
       options = {
         :copyright         => self.copyright_file,
         :changelog         => self.changelog_file,
-        :readme            => self.readme_file,
+        :README            => self.readme_file,
         :postinst          => self.postinst,
         :preinst           => self.preinst,
         :postrm            => self.postrm,
