@@ -73,6 +73,7 @@ module Package
         return false
       end
       if self.class.where(:name => package_name).count > 0
+        (self.depends = "") unless self.depends
         self.depends += ", " unless self.depends.blank?
         self.depends += package_name
         self.depends += " (#{versions})" if versions
