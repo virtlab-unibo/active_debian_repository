@@ -71,17 +71,13 @@ module Package
       if self.depends_on?(package_name)
         self.errors.add(:base, "Dependency already present")
         return false
-      end
-      if self.class.where(:name => package_name).count > 0
+      else 
         (self.depends = "") unless self.depends
         self.depends += ", " unless self.depends.blank?
         self.depends += package_name
         self.depends += " (#{versions})" if versions
-      else
-        self.errors.add(:base, "Unknown package #{package_name}")
-        return false
+        self.save
       end
-      self.save
     end
 
     # package.add_dependency('vlan') or with version package.add_dependency('vlan', "23.4")
