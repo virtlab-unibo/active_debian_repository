@@ -104,13 +104,17 @@ module Package
     # * *Raises* :
     #
     def depends_on
-      self.depends.split(', ').inject([]) do |res, name|
-        if p = self.class.where(:name => name.split(/ /)[0]).first
-          res << p
-        else
-          logger.info("No package #{name.split(/ /)[0]} for #{self.depends} in #{self.inspect}")
+      if self.depends
+        self.depends.split(', ').inject([]) do |res, name|
+          if p = self.class.where(:name => name.split(/ /)[0]).first
+            res << p
+          else
+            logger.info("No package #{name.split(/ /)[0]} for #{self.depends} in #{self.inspect}")
+          end
+          res
         end
-        res
+      else
+        []
       end
     end
 
