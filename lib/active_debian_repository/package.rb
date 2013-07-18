@@ -153,6 +153,23 @@ module Package
       end
       result
     end
+ 
+    # * *Args*    :
+    # - type: the symbol representing the type of the script
+    # * *Returns* :
+    #   - Return the path of the script identimied by the type
+    #   - nil if no such a script exist.
+    # * *Raises* :
+    #
+    def get_script_object type
+      result = nil
+      self.scripts.each do |script|
+        if script.stype.to_sym == type.to_sym
+          result = script
+        end
+      end
+      result
+    end
 
     # * *Args*    :
     #   - +package_name+ -> string.
