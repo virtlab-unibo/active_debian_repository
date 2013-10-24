@@ -67,11 +67,13 @@ module ActiveDebianRepository
       #
       def update_db(packages_file = nil)
         # Hash of name => version
+        # ['texlive' => '2012.2012061', ...]
         old_packages = self.packages.select([:name, :version]).inject({}){|res, p| res[p.name] = p.version; res}
         
         packages_file ||= get_packages_file_from_net
         ActiveDebianRepository::Parser.new(packages_file).each do |p|
-          if old_package_version = old_packages.delete(p['package']) # already there
+          old_package_version = old_packages.delete(p['package']) 
+          if old_package_version 
             if old_package_version != p['version'] # different version... we need to update it
               self.packages.where(:name => p['package']).first.update_attributes(ActiveDebianRepository::Parser.db_attributes(p)) or raise p.inspect
             end
