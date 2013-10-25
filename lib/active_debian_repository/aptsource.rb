@@ -71,19 +71,22 @@ module ActiveDebianRepository
         old_packages = self.packages.select([:name, :version]).inject({}){|res, p| res[p.name] = p.version; res}
         
         packages_file ||= get_packages_file_from_net
+
+        # Rails.logger.silence(Logger::WARN) do # silence logging; emit sound every 50 packages
         ActiveDebianRepository::Parser.new(packages_file).each do |p|
-          old_package_version = old_packages.delete(p['package']) 
-          if old_package_version 
-            if old_package_version != p['version'] # different version... we need to update it
-              self.packages.where(:name => p['package']).first.update_attributes(ActiveDebianRepository::Parser.db_attributes(p)) or raise p.inspect
-            end
-          else # we need to add it
+          # i = i + 1
+          # (i % 50 == 0) and logger.warn("updating db: #{p['package']}")
+          # if not package with the name we create it
+          old_package_version = old_packages.delete(p['package']) do |name|
             res = self.packages.create(ActiveDebianRepository::Parser.db_attributes(p))
             if ! res.valid? 
               logger.info("Error in saving #{res.inspect} #{res.errors.inspect}")
               break
             end
+            next
           end
+          # if version changed we update it
+          (self.packages.where(:name => p['package']).first.update_attributes(ActiveDebianRepository::Parser.db_attributes(p)) or raise p.inspect) unless old_package_version == p['version'] 
         end
         self.packages.where(:name => old_packages.keys).delete_all unless old_packages.keys.empty?
         # FIXME

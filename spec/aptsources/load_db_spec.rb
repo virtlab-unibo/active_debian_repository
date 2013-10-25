@@ -27,6 +27,15 @@ describe "Aptsource" do
     a.packages.where(:name => '0ad').first.version.should == '0~r11853-2'
   end
 
+  it "should update database even with null version" do
+    a = FactoryGirl.create(:aptsource)
+    a.update_db(@test_file)
+    puts "-----------------------------------------------------"
+    a.packages.first.update_attribute(:version, nil)
+    a.update_db(@test_file_different)
+    a.packages.where(:name => '389-console').to_a.should be_empty
+    a.packages.where(:name => '0ad').first.version.should == '0~r11853-2'
+  end
 end
 
 
