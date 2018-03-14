@@ -7,7 +7,7 @@ place it in the right folder under a debian repository.
 
 ## Requirements
 
-* ruby 2.0.0p195
+* ruby 2.0 or greater
 * dpkg installed on the system
 * debhelper installed on the system
 
@@ -48,10 +48,10 @@ to the line `deb http://mi.mirror.garr.it/mirrors/debian/ stable main`
 in `/etc/apt/sources.list`, just do
 
 ```ruby
-source = AptSource.new(:uri => 'http://mi.mirror.garr.it/mirrors/debian',
-                     :distribution => 'stable',
-                     :component => 'main',
-                     :arch => 'binary-amd64')
+source = AptSource.new(uri:          'http://mi.mirror.garr.it/mirrors/debian',
+                       distribution: 'stable',
+                       component:    'main',
+                       arch:         'binary-amd64')
 ```
 
 where `arch` can be one of `['binary-amd64', 'binary-i386', 'source']`.
@@ -70,9 +70,6 @@ metadata (name, description, version...). The information
 is taken from 
 `source.url`
 
-
-
-
 ### ActiveDebianRepository::Package
 
 in your project you use this component adding
@@ -81,10 +78,10 @@ in your project you use this component adding
 ```ruby
 class Package < ActiveRecord::Base
   belongs_to :archive
-  acts_as_debian_package :section      => 'vlab',
-                        :homepage => "https://www.virtlab.unibo.it/cpkg/",
-                        :maintainer   => "Unibo Virtlab",
-                        :email        => "support@virtlab.unibo.it",
+  acts_as_debian_package section:    'vlab',
+                         homepage:   'https://www.virtlab.unibo.it/cpkg/',
+                         maintainer: 'Unibo Virtlab',
+                         email:      'support@virtlab.unibo.it',
 end
 ```
 
@@ -118,8 +115,7 @@ For example, given
 
 ```ruby
 dest_dir = '/var/www/repo/dists/packages'
-package = ActiveDebianRepository::Package.new(:name => 'test123', 
-                                :version => '12.8') 
+package = ActiveDebianRepository::Package.new(name: 'test123', version: '12.8') 
                                 
 ```
 
