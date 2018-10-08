@@ -1,22 +1,26 @@
-# -*- encoding: utf-8 -*-
-require File.expand_path('../lib/active_debian_repository/version', __FILE__)
+$:.push File.expand_path("lib", __dir__)
 
-Gem::Specification.new do |gem|
-  gem.authors       = ["Pietro Donatini", "Mattia Lambertini"]
-  gem.email         = ["support@virtlab.unibo.it"]
-  gem.description   = %q{Utilities for Debian Packages}
-  gem.summary       = %q{Utilities for Debian Packages}
-  gem.homepage      = ""
+# Maintain your gem's version:
+require "active_debian_repository/version"
 
-  gem.files         = `git ls-files`.split($\)
-  gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
-  gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
-  gem.name          = "active_debian_repository"
-  gem.require_paths = ["lib"]
-  gem.version       = ActiveDebianRepository::VERSION
+# Describe your gem and declare its dependencies:
+Gem::Specification.new do |s|
+  s.name        = "active_debian_repository"
+  s.version     = ActiveDebianRepository::VERSION
+  s.authors     = ["Pietro Donatini", "Mattia Lambertini"]
+  s.email       = ["support@virtlab.unibo.it"]
+  s.homepage    = ""
+  s.summary     = "Utilities for Debian Packages"
+  s.description = "Utilities for Debian Packages"
+  s.license     = "MIT"
 
-  gem.add_development_dependency 'rake'
-  gem.add_development_dependency 'rspec'
+  s.require_paths = ['lib']
+  s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
 
-  gem.add_dependency 'spawnling'
+  s.add_dependency "rails", "~> 5.2.1"
+  s.add_dependency "spawnling"
+  
+  s.add_development_dependency "sqlite3"
+  # s.add_development_dependency "rspec-rails"
+  s.add_development_dependency "factory_bot"
 end
