@@ -34,10 +34,11 @@ ActiveDebianRepository has the following components:
 ### ActiveDebianRepository::AptSource
 
 It handles the debian source (Repository, as in 
-/etc/apt/sources.list), for example
+/etc/apt/sources.list) and can be used with
+acts_as_apt_source. For example
 
 ```ruby
-class AptSource < ActiveRecord::Base
+class Archive < ActiveRecord::Base
   has_many :packages
   acts_as_apt_source
 end
