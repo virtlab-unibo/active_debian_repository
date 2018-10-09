@@ -1,5 +1,5 @@
 sqlite3: 
   :adapter: sqlite3 
-  :database: ":memory:"
-  :reconnect: true
+  :database: "/tmp/pippo121221" # ":memory:"
+  :reconnect: true # !!!!!
 

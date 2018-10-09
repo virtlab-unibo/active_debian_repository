@@ -12,29 +12,27 @@ describe "Aptsource" do
   end
   
   it "should insert data in clean database" do
-    a = FactoryGirl.create(:aptsource)
+    a = FactoryBot.create(:aptsource)
     a.update_db(@test_file)
-    a.packages.where(:name => '0ad').first.name.should == '0ad'
-    a.packages.where(:name => 'adabrowse').first.version.should == '4.0.3-5'
+    expect(a.packages.where(name: '0ad').first.name).to eq('0ad')
+    expect(a.packages.where(name: 'adabrowse').first.version).to eq('4.0.3-5')
   end
 
   it "should update database" do
-    a = FactoryGirl.create(:aptsource)
+    a = FactoryBot.create(:aptsource)
     a.update_db(@test_file)
-    puts "-----------------------------------------------------"
     a.update_db(@test_file_different)
-    a.packages.where(:name => '389-console').to_a.should be_empty
-    a.packages.where(:name => '0ad').first.version.should == '0~r11853-2'
+    expect(a.packages.where(:name => '389-console')).to be_empty
+    expect(a.packages.where(:name => '0ad').first.version).to eq('0~r11853-2')
   end
 
   it "should update database even with null version" do
-    a = FactoryGirl.create(:aptsource)
+    a = FactoryBot.create(:aptsource)
     a.update_db(@test_file)
-    puts "-----------------------------------------------------"
     a.packages.first.update_attribute(:version, nil)
     a.update_db(@test_file_different)
-    a.packages.where(:name => '389-console').to_a.should be_empty
-    a.packages.where(:name => '0ad').first.version.should == '0~r11853-2'
+    expect(a.packages.where(:name => '389-console')).to be_empty
+    expect(a.packages.where(:name => '0ad').first.version).to eq('0~r11853-2')
   end
 end
 

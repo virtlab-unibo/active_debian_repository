@@ -9,8 +9,8 @@ require 'spec_helper'
 describe "Factory aptsources" do
   
   it "factory should create valid aptsource" do
-    a = FactoryGirl.build(:aptsource)
-    a.should be_valid
+    a = FactoryBot.build(:aptsource)
+    expect(a).to be_valid
   end
 
 end

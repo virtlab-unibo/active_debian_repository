@@ -1,19 +1,17 @@
 require 'spec_helper'
 
 describe "Aptsource" do
-
   before(:all) do
-    @a = FactoryGirl.create(:aptsource, {uri: 'http://mozilla.debian.net',
-                                         distribution: 'squeeze-backports', 
-                                         component: 'iceweasel-release', 
-                                         arch: 'binary-i386'})
+    @a = FactoryBot.create(:aptsource, { uri: 'https://download.docker.com/linux/debian',
+                                         distribution: 'stretch', 
+                                         component: 'stable', 
+                                         arch: 'binary-amd64' })
   end
   
   it "should update database downloading from network" do
     @a.update_db
-    @a.packages.where(:name => 'xulrunner-dev').to_a.should_not be_empty
+    expect(@a.packages.where(name: 'docker-ce')).not_to be_empty
   end
-
 end
 
 

@@ -5,7 +5,7 @@ describe "Build packages with scripts" do
 
   # delete previous package and create new
   before(:all) do
-    @package = FactoryGirl.create(:package)
+    @package = FactoryBot.create(:package)
     @script = %q[#!/bin/bash -e
      echo "Hello I'M a Test!"
      exit 0]

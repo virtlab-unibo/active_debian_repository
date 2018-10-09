@@ -3,7 +3,7 @@ require 'spec_helper'
 describe "Changelog base " do
 
   before(:all) do
-    @chlog = Changelog.new #FactoryGirl.create(:changelog)
+    @chlog = Changelog.new #FactoryBot.create(:changelog)
   end
 
   it " urgency value should be nil by default" do
@@ -56,7 +56,7 @@ describe "Changelog base " do
   end
 
   it "changelog should be saved correctly into the database" do
-    @chlog.package = FactoryGirl.create(:package)
+    @chlog.package = FactoryBot.create(:package)
     @chlog.save
   end
 

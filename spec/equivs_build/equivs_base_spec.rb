@@ -5,7 +5,7 @@ describe "Equivs" do
 
   # delete previous package and create new
   before(:all) do
-    @package = FactoryGirl.build(:package)
+    @package = FactoryBot.build(:package)
     @equivs = ActiveDebianRepository::Equivs.new(@package, REPO_DIR)
     @expected_file_name = File.join(REPO_DIR, @equivs.package_filename)
     File.delete(@expected_file_name) if File.exists? @expected_file_name

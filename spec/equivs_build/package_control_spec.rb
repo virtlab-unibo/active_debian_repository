@@ -3,7 +3,7 @@ require 'spec_helper'
 describe "Equivs control string method" do
 
   before(:each) do
-    @package = FactoryGirl.create(:package)
+    @package = FactoryBot.create(:package)
   end
 
   # in spec_helper abbiamo definito i default di repo.... 

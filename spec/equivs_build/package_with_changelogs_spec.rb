@@ -4,7 +4,7 @@ require 'tmpdir'
 describe "Build packages with changelogs" do
 
   before(:all) do
-    @package = FactoryGirl.create(:package)
+    @package = FactoryBot.create(:package)
     @equivs = ActiveDebianRepository::Equivs.new(@package, REPO_DIR)
     
     # add a changelog to the package

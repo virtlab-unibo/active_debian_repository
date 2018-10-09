@@ -7,7 +7,7 @@ describe "Repository base" do
   end
 
   it "" do
-    package = FactoryGirl.build(:package)
+    package = FactoryBot.build(:package)
   #  package.depends_on.should be_empty
   end
 
