@@ -8,6 +8,7 @@ describe "Build packages with files" do
     @equivs = ActiveDebianRepository::Equivs.new(@package, REPO_DIR)
     # delete the package if already exists 
     @expected_file_name = File.join(REPO_DIR, @equivs.package_filename)
+
     File.delete(@expected_file_name) if File.exists? @expected_file_name
     
     # create a dummy file on disk
@@ -27,17 +28,20 @@ describe "Build packages with files" do
   end
 
   it "should successfully create a package with a file" do
-    @equivs.create.should be_true
+    expect(File.exists?(@equivs.create)).to be true
   end
     
   it "should contain an attach file with the correct content" do
     Dir.mktmpdir do |tmp_dir|
       res = `dpkg -x #{@expected_file_name} #{tmp_dir}`
-      $?.success?.should be_true
+      expect($?.success?).to be true
+
       file = @package.documents[0]
       attach = File.join(tmp_dir, file.install_path, file.name)
-      File.exists?(attach).should be_true
-      File.open(attach, 'r'){|file| file.readline.should == @random_string}
+
+      expect(File.exists?(attach)).to be true
+
+      File.open(attach, 'r'){|file| expect(file.readline).to eq(@random_string)}
     end
   end
 
