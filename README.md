@@ -49,6 +49,7 @@ to the line `deb http://mi.mirror.garr.it/mirrors/debian/ stable main`
 in `/etc/apt/sources.list`, just do
 
 ```ruby
+# deb http://mi.mirror.garr.it/mirrors/debian/ stable main
 source = AptSource.new(uri:          'http://mi.mirror.garr.it/mirrors/debian',
                        distribution: 'stable',
                        component:    'main',
@@ -101,7 +102,7 @@ for every package in the filename
 ### ActiveDebianRepository::Equivs
 
 Given a `ActiveDebianRepository::Package` it provides a methods to create the debian
-`.deb` file (internally it uses dpkg-buildpackage.
+`.deb` file (internally it uses `/usr/bin/dpkg-buildpackage` from `dpkg-dev`).
 
 ```ruby
 package = ActiveDebianRepository::Package.first
