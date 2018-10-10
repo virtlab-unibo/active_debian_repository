@@ -18,6 +18,8 @@ end
 ActiveRecord::Base.establish_connection(YAML::load(IO.read(File.dirname(__FILE__) + "/database.yml"))['sqlite3'])
 load(File.dirname(__FILE__) + "/schema.rb") 
 
+Paperclip::Attachment.default_options[:validate_media_type] = false
+
 class Aptsource < ActiveRecord::Base
   has_many :packages
   acts_as_apt_source
@@ -29,10 +31,10 @@ class Package < ActiveRecord::Base
   has_many   :scripts
   has_many   :changelogs
 
-  acts_as_debian_package :maintainer  => "Unibo Virtlab",
+  acts_as_debian_package maintainer: "Unibo Virtlab",
+                         email:      "info@virtlab.unibo.it"
                          #insert your key id if you want to sign packages
                          # :gpg_key     => "09A0DEDE",
-                         :email       => "info@virtlab.unibo.it"
 end
 
 #TODO: We need to consider Acts_as_debian_document
@@ -40,9 +42,7 @@ class Document < ActiveRecord::Base
   include Paperclip::Glue
   belongs_to :package
 
-  has_attached_file :attach,
-                    :path => "#{File.dirname(__FILE__)}:url"
-
+  has_attached_file :attach, path: "#{File.dirname(__FILE__)}:url"
   do_not_validate_attachment_file_type :attach
 
   def to_s
@@ -57,9 +57,7 @@ class Script < ActiveRecord::Base
 
   validates_format_of :stype, :with => /\A(preinst|postinst|prerm|postrm)\z/, :message => :script_type_unknown
 
-  has_attached_file :attach,
-                    :path => "#{File.dirname(__FILE__)}:url"
-
+  has_attached_file :attach, path: "#{File.dirname(__FILE__)}:url"
   do_not_validate_attachment_file_type :attach
 
   def to_s
@@ -71,7 +69,6 @@ class Changelog < ActiveRecord::Base
   belongs_to :package
 
   acts_as_debian_changelog
-
 end
 
 FactoryBot.find_definitions

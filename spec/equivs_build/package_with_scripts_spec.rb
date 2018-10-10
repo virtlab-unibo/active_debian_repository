@@ -37,7 +37,7 @@ describe "Build packages with scripts" do
 
   it "should create a deb with a preinst script " do
     @package.add_script(:preinst, @preinst_file)
-    expect(ActiveDebianRepository::Equivs.new(@package, REPO_DIR).create).to be true
+    expect(File.exists?(ActiveDebianRepository::Equivs.new(@package, REPO_DIR).create)).to be true
 
     Dir.mktmpdir do |tmp_dir|
       res = `dpkg -e #{@expected_file_name} #{tmp_dir}`
@@ -51,7 +51,7 @@ describe "Build packages with scripts" do
   it "should create a deb with a preinst and postinst script " do
     @package.add_script(:preinst, @preinst_file)
     @package.add_script(:postinst, @postinst_file)
-    expect(ActiveDebianRepository::Equivs.new(@package, REPO_DIR).create).to be true
+    expect(File.exists?(ActiveDebianRepository::Equivs.new(@package, REPO_DIR).create)).to be true
 
     Dir.mktmpdir do |tmp_dir|
       res = `dpkg -e #{@expected_file_name} #{tmp_dir}`
