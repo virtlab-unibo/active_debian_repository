@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency "rails", "~> 5.2.1"
   s.add_dependency "spawnling"
+  s.add_dependency "mini_magick" # ActiveStorage
   
   s.add_development_dependency "sqlite3"
   # s.add_development_dependency "rspec-rails"
