@@ -8,9 +8,9 @@ describe "Parser" do
 
   it "should read Package file and get the 2vcard packageas first" do
     ActiveDebianRepository::Parser.new(@test_file).each do |package|
-      package['package'].should == "0ad"
-      package['version'].should == "0~r11863-2"
-      package['filename'].should == %|pool/main/0/0ad/0ad_0~r11863-2_i386.deb|
+      expect(package['package']).to eq "0ad"
+      expect(package['version']).to eq "0~r11863-2"
+      expect(package['filename']).to eq %|pool/main/0/0ad/0ad_0~r11863-2_i386.deb|
       break
     end
   end
@@ -18,8 +18,8 @@ describe "Parser" do
   it "db_attributes should give correct attributes" do
     ActiveDebianRepository::Parser.new(@test_file).each do |package|
       da = ActiveDebianRepository::Parser.db_attributes(package)
-      da[:name].should == "0ad"
-      da[:short_description].should == "Real-time strategy game of ancient warfare"
+      expect(da[:name]).to eq "0ad"
+      expect(da[:short_description]).to eq "Real-time strategy game of ancient warfare"
       break
     end
   end

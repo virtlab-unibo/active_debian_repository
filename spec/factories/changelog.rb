@@ -2,9 +2,9 @@ FactoryBot.define do
   factory :changelog do
     distributions { "precise" }
     description   { "I'am a change description\n    * bla bla" }
-    date          { "Tue, 23 04 2013 17:57:37 +0200" }
+    date          { "Wed, 10 Oct 2018 17:57:37 +0200" }
     urgency       { "high" }
-    version       { "20130401-19" }
+    version       { "2018101001-19" }
     package 
   end
 end
