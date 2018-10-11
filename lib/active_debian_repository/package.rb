@@ -55,7 +55,7 @@ module Package
     # * *Raises* :
     #
     def depends_on?(package_name)
-      self.depends.split(', ').map{|n| n.split[0]}.include?(package_name) if self.depends
+      self.depends ? self.depends.split(', ').map{|n| n.split[0]}.include?(package_name) : false
     end
 
     # package.add_dependency('vlan') or with version package.add_dependency('vlan', "23.4")
@@ -161,7 +161,7 @@ module Package
     #   - nil if no such a script exist.
     # * *Raises* :
     #
-    def get_script_object type
+    def get_script_object(type)
       result = nil
       self.scripts.each do |script|
         if script.stype.to_sym == type.to_sym
@@ -177,27 +177,24 @@ module Package
     #   -
     # * *Raises* :
     #
-    def add_script (type, script)
+    def add_script(type, script)
       new_script = self.scripts.new
       new_script.stype = type.to_s
 
-      if script.is_a? File
-        logger.debug ("Adding a script, the object is a File")
+      if script.is_a?(File)
+        logger.debug ("Adding a script to type #{type}, the object is a File")
         new_script.name = File.basename(script.path)
         new_script.attach = script
-
-      elsif File.exist? script # it's path
-        logger.debug ("Adding a script, the object is a path")
+      elsif File.exist?(script) # it's path
+        logger.debug ("Adding a script to type #{type}, the object is the path #{script}")
         new_script.name = File.basename(script)
         new_script.attach = File.new(script, 'r')
-
-      elsif script.is_a? String # it's a script body
-        logger.debug ("Adding a script, the object is a script content")
+      elsif script.is_a?(String) # it's a script body
+        logger.debug ("Adding a script to type #{type}, the object is a script content")
         tfile = Tempfile.new(type.to_s)
         File.open(tfile, 'w') { |f| f.print script }
         new_script.name = type.to_s
         new_script.attach = tfile
-
       else
         raise "Script is not a file, a path or a string"
       end

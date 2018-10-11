@@ -302,7 +302,7 @@ module ActiveDebianRepository
     # from 0 even if it can't signed the package.
     # In that case the package is successfully created.
     #   -
-    def run_dpkg tmp_dir, k_id
+    def run_dpkg(tmp_dir, k_id)
       self.populate_package tmp_dir
       (key = "-k#{k_id}") unless k_id == ""
       stdout = `dpkg-buildpackage -rfakeroot #{key} 2>&1`
@@ -314,7 +314,7 @@ module ActiveDebianRepository
       end 
     end
 
-    def populate_package package_dir
+    def populate_package(package_dir)
       options = {
         :copyright         => self.copyright_file,
         :changelog         => self.changelog_file,

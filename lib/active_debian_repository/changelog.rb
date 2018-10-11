@@ -1,17 +1,18 @@
+# https://www.debian.org/doc/manuals/maint-guide/dreq.en.html#changelog
 module ActiveDebianRepository
   module Changelog 
 
-
     def acts_as_debian_changelog
-    
+      validates :package, presence: true
+
       class_attribute :default_values
 
       self.default_values = {
-        :version        => "1.0",
-        :date           => "Thu, 1 01 1972 00:00:00 +0200",
-        :distributions  => "unstable",
-        :urgency        => "low", # low, medium, high, emergency
-        :description    => "No description provided"
+        version:       "1.0",
+        date:          "Thu, 1 01 1972 00:00:00 +0200",
+        distributions: "unstable",
+        urgency:       "low", # low, medium, high, emergency
+        description:   "No description provided"
       }
 
       include InstanceMethods
@@ -28,38 +29,22 @@ module ActiveDebianRepository
     end
 
     module InstanceMethods
-
-      #      package (version) distribution(s); urgency=urgency
-      #         [optional blank line(s), stripped]
-      #      * change details
-      #        more change details
-      #         [blank line(s), included in output of dpkg-parsechangelog]
-      #      * even more change details
-      #         [optional blank line(s), stripped]
-      #      -- maintainer name <email address>[two spaces] date
-      #      
       #     date ->  dd month yyyy hh:mm:ss +zzzz
       #     distribution(s) lists the distributions where this version should be
       #     FIXME: every line of the changes section has to be indented by 2 spaces at least.
       def to_s
-        urgency_v = self.urgency ? self.urgency : default_values[:urgency]
-        distrib_v = self.distributions ?  self.distributions : default_values[:distributions] 
-        version_v = self.version ? self.version : default_values[:version] 
-        date_v = self.date ? self.date  : Changelog.date_line 
-        (self.description = default_values[:description]) unless self.description
-        %Q[#{package.name} (#{version_v}) #{distrib_v}; urgency=#{urgency_v}
+        %Q[#{package.name} (#{self.version || default_values[:version]}) #{self.distributions || default_values[:distributions]}; urgency=#{self.urgency || default_values[:urgency]}
 
 #{self.change_lines}
 
- -- #{package.maintainer} <#{package.email}>  #{date_v}]
+ -- #{package.maintainer} <#{package.email}>  #{self.date || Changelog.date_line}]
       end 
 
-      #
-      #
+      # clean description 
       def change_lines
         ch_lines = ""
-        self.description.each_line do |line| 
-             ch_lines << "  " << line
+        (self.description || default_values[:description]).each_line do |line| 
+          ch_lines << "  " << line
         end
         ch_lines
       end

@@ -68,14 +68,17 @@ module ActiveDebianRepository
       def update_db(packages_file = nil)
         # Hash of name => version
         # ['texlive' => '2012.2012061', ...]
-        old_packages = self.packages.select([:name, :version]).inject({}){|res, p| res[p.name] = p.version; res}
+        old_packages = self.packages.select(:name, :version).inject({}){|res, p| res[p.name] = p.version; res}
         
         packages_file ||= get_packages_file_from_net
 
+        logger.warn("in update_db with packages_file=#{packages_file}") 
+
         # Rails.logger.silence(Logger::WARN) do # silence logging; emit sound every 50 packages
+        i = 0 
         ActiveDebianRepository::Parser.new(packages_file).each do |p|
-          # i = i + 1
-          # (i % 50 == 0) and logger.warn("updating db: #{p['package']}")
+          (i % 50 == 0) and logger.warn("updating db: #{p['package']}")
+          i = i + 1
           # if not package with the name we create it
           old_package_version = old_packages.delete(p['package']) do |name|
             res = self.packages.create(ActiveDebianRepository::Parser.db_attributes(p))
@@ -106,8 +109,9 @@ module ActiveDebianRepository
           return true
         end
         logger.info ("In update_db_in_background")
-        @spawn = Spawnling.new() do
-          logger.info("in spawn before running update_db") 
+        @spawn = Spawnling.new do
+          logger.info("in spawn before running update_db with packages_file=#{packages_file}") 
+          # ActiveRecord::Base.connection.reconnect!
           update_db(packages_file)
         end
       end
