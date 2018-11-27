@@ -34,7 +34,8 @@ module Package
       :readme         => "", # default to a generic readme
       :short_description => "Package created by the Active_Debian_Repo gem.",
       :long_description => "",
-      :gpg_key        => ""
+      :gpg_key        => "",
+      :search_class   => "Package"
     }.merge(options)
 
     include InstanceMethods
@@ -103,7 +104,7 @@ module Package
     def depends_on
       if self.depends
         self.depends.split(', ').inject([]) do |res, name|
-          if p = self.class.where(:name => name.split(/ /)[0]).first
+          if p = self.search_class.constantize.where(name: name.split(/ /)[0]).first
             res << p
           else
             logger.info("No package #{name.split(/ /)[0]} for #{self.depends} in #{self.inspect}")
