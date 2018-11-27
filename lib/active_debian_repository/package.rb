@@ -12,31 +12,34 @@ module Package
 
     # name must consist only of lower case letters (a-z), digits (0-9), plus (+) and minus (-) signs, and periods (.).
     # They must be at least two characters long and must start with an alphanumeric character.
-    validates_format_of :name, :with => /\A[a-z0-9][a-z0-9+.-]+\z/, :message => :package_name_format
+    validates_format_of :name, with: /\A[a-z0-9][a-z0-9+.-]+\z/, message: :package_name_format
+
 
     self.default_attributes = {
-      :name           => 'dummy',
-      :section        => 'Misc',
-      :maintainer     => 'Maintainer',
-      :email          => 'debutils@example.com',
-      :homepage       => 'http://www.virtlab.unibo.it',
-      :architecture   => 'all',
-      :priority       => 'optional',
-      :standards_version => '3.9.2',
-      :depends        => "",
-      :pre_depends    => "",
-      :suggests       => "",
-      :reccomends     => "",
-      :provides       => "",
-      :replaces       => "",
-      :version        => "0.1-1",
-      :copyright      => "", # default is GPLv2
-      :readme         => "", # default to a generic readme
-      :short_description => "Package created by the Active_Debian_Repo gem.",
-      :long_description => "",
-      :gpg_key        => "",
-      :search_class   => "Package"
+      name:         'dummy',
+      section:      'Misc',
+      maintainer:   'Maintainer',
+      email:        'debutils@example.com',
+      homepage:     'http://www.virtlab.unibo.it',
+      architecture: 'all',
+      priority:     'optional',
+      standards_version: '3.9.2',
+      depends:      '',
+      pre_depends:  '',
+      suggests:     '',
+      reccomends:   '',
+      provides:     '',
+      replaces:     '',
+      version:      '0.1-1',
+      copyright:    '', # default is GPLv2
+      readme:       '', # default to a generic readme
+      short_description: 'Package created by the Active_Debian_Repo gem.',
+      long_description: '',
+      gpg_key:      '', 
+      search_class_name: self.class # to search dependencies
     }.merge(options)
+
+    self.default_attributes[:search_class_name] = self.default_attributes[:search_class_name].constantize
 
     include InstanceMethods
     logger.info "Initialized as acts_as_debian_package"
@@ -95,16 +98,11 @@ module Package
     end
 
     # FIXME: maybe we should rename it: dependencies
-    #
-    # * *Args*    :
-    # * *Returns* :
-    #   - Return an array of package names it depends on
-    # * *Raises* :
-    #
+    #   - Return an array of search_class || self.class packages it depends on
     def depends_on
       if self.depends
-        self.depends.split(', ').inject([]) do |res, name|
-          if p = self.search_class.constantize.where(name: name.split(/ /)[0]).first
+        self.depends.split(', ').sort.inject([]) do |res, name|
+          if p = self.search_class_name.where(name: name.split(/ /)[0]).first
             res << p
           else
             logger.info("No package #{name.split(/ /)[0]} for #{self.depends} in #{self.inspect}")
@@ -127,7 +125,7 @@ module Package
     #
     def method_missing (method_name, *args, &block)
       begin
-        super #let activeBase to work as it wish.
+        super # let activeBase to work as it wish.
       rescue NoMethodError # if nothing handled it
         if default_attributes.has_key? method_name # check if we have a default value
           return self.default_attributes[method_name]
